@@ -3,7 +3,7 @@ import { Link } from 'react-router-dom';
 
 const UserOptionGetStart: React.FC = () => {
   return (
-    <div className="bg-white p-32">
+    <div className="bg-white py-32">
       <div className="container mx-auto grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* For Clients */}
         <div className="bg-gray-100 rounded-lg shadow-md p-6 flex flex-col items-center text-center">
