@@ -24,7 +24,7 @@ const LowyerStep1: React.FC = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-50">
+    <div className="pt-24 pb-6 flex items-center justify-center min-h-screen bg-gray-50">
       <form className="bg-white p-6 rounded-lg shadow-lg w-full max-w-2xl">
         <h1 className="text-2xl font-bold text-center mb-4">Client Registration</h1>
         <h3 className="text-lg font-medium text-center mb-6">Step 1 of 3: Basic Information</h3>

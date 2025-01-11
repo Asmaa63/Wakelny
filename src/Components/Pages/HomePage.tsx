@@ -1,4 +1,5 @@
 import React from 'react';
+import { Link } from 'react-router-dom';
 import legalImage from '../../assets/low.webp';
 import { motion } from 'framer-motion';
 
@@ -28,12 +29,14 @@ const HomePage: React.FC = () => {
           <p className="text-lg text-black">
             Find the perfect lawyer who can handle your needs with expertise and trust.
           </p>
-          <motion.button
-            className="bg-yellow-400 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-yellow-500 transform hover:scale-105 transition-all"
-            whileHover={{ scale: 1.05 }}
-          >
-            Get Started
-          </motion.button>
+          <motion.div whileHover={{ scale: 1.05 }}>
+            <Link
+              to="/getstart"
+              className="bg-yellow-400 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-yellow-500 transform hover:scale-105 transition-all inline-block"
+            >
+              Get Started
+            </Link>
+          </motion.div>
         </motion.div>
       </div>
     </div>

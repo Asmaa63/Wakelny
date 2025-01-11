@@ -3,7 +3,7 @@ import { FaGavel } from 'react-icons/fa';
 
 const LowyerStep3: React.FC = () => {
   return (
-    <div className="min-h-screen bg-gray-50 flex items-center justify-center">
+    <div className="pt-24 pb-6 min-h-screen bg-gray-50 flex items-center justify-center">
       <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-4xl">
         {/* Header */}
         <header className="flex items-center justify-between border-b pb-4 mb-6">

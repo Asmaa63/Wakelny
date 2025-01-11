@@ -9,6 +9,8 @@ import LowyerStep2 from './Components/Lawyers/LowyerStep2';
 import LowyerStep1 from './Components/Lawyers/LawyerStep1';
 import UserStep3 from './Components/User/UserStep3';
 import LowyerStep3 from './Components/Lawyers/LowyerStep3';
+import Login from './Components/Login/Login';
+import UserOptionGetStart from './Components/Pages/UserOptionGetStart';
 
 const App: React.FC = () => {
   return (
@@ -24,13 +26,14 @@ const App: React.FC = () => {
           <UserOptions/>
           </>
         } />
-        <Route path="/options" element={<UserOptions />} />
+        <Route path="/getstart" element={<UserOptionGetStart/> } />
         <Route path="/ClientStep1" element={<UserStep1 />} />
         <Route  path="/userstep2" element={<UserStep2/>} />
         <Route  path="/userstep3" element={<UserStep3/> } />
         <Route path="/lowyertStep1" element={<LowyerStep1/> } />
         <Route path='/lowyerstep2'element={<LowyerStep2/> } />
         <Route path='/lowyerstep3'element={<LowyerStep3/> } />
+        <Route path='/login'element={<Login/> } />
       </Routes>
     </Router>
   );
