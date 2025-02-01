@@ -1,13 +1,42 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { Link, useNavigate } from "react-router-dom";
 import { FaGavel } from "react-icons/fa";
-import { Link } from "react-router-dom";
-// import { LanguageProvider, useLanguage } from '../../Context/LanguageContext';
+import { FiUser} from "react-icons/fi";
+import { signOut } from "firebase/auth";
+import { auth, db } from "../../FireBase/firebaseLowyerRegister";
+import { doc, deleteDoc, getDoc } from "firebase/firestore";
+import toast from "react-hot-toast";
 
-
-const Header: React.FC = () => {
+const HeaderWithLogin: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  const [user, setUser] = useState<any>(null);
+  const [showProfile, setShowProfile] = useState(false);
+  const navigate = useNavigate();
 
+  useEffect(() => {
+    const fetchUserData = async () => {
+      if (auth.currentUser) {
+        const userDoc = await getDoc(doc(db, "users", auth.currentUser.uid));
+        if (userDoc.exists()) {
+          setUser(userDoc.data());
+        }
+      }
+    };
+    fetchUserData();
+  }, []);
 
+  const handleLogout = async () => {
+    try {
+      if (auth.currentUser) {
+        await deleteDoc(doc(db, "users", auth.currentUser.uid)); // حذف بيانات المستخدم
+      }
+      await signOut(auth);
+      toast.success("Logged out successfully!");
+      navigate("/login");
+    } catch (error) {
+      toast.error("Failed to log out. Try again.");
+    }
+  };
 
   return (
     <nav className="bg-gray-100 shadow-md p-4 fixed top-0 left-0 w-full z-50">
@@ -20,41 +49,35 @@ const Header: React.FC = () => {
 
         {/* Navigation Links */}
         <div className="hidden md:flex items-center space-x-6">
-          <Link
-            to="/"
-            className="text-gray-800 hover:text-yellow-500 font-medium text-lg"
-          >
+          <Link to="/HomePage" className="text-gray-800 hover:text-yellow-500 font-medium text-lg">
             Home
           </Link>
-          <Link
-            to="/"
-            className="text-gray-800 hover:text-yellow-500 font-medium text-lg"
-          >
+          <Link to="/HomePage" className="text-gray-800 hover:text-yellow-500 font-medium text-lg">
             Dashboard
           </Link>
-          <Link
-            to="/"
-            className="text-gray-800 hover:text-yellow-500 font-medium text-lg"
-          >
+          <Link to="/HomePage" className="text-gray-800 hover:text-yellow-500 font-medium text-lg">
             Search
           </Link>
-          <Link
-            to="/"
-            className="text-gray-800 hover:text-yellow-500 font-medium text-lg"
-          >
-            Profile
-          </Link>
 
-          {/* Login Button */}
-          <Link
-            to="/login"
-            className="bg-yellow-400 text-white font-semibold py-2 px-8 rounded-lg shadow-md hover:bg-yellow-500 transform hover:scale-105 transition-all"
+          {/* Profile Icon */}
+          <Link to="/profile" className="relative text-gray-800 hover:text-yellow-500 text-lg border rounded-full p-2 border-yellow-400">
+  <FiUser className="text-2xl cursor-pointer transition-all transform hover:scale-110" />
+</Link>
+
+
+          {/* Logout Button */}
+          <button
+            onClick={handleLogout}
+            className="bg-yellow-400 text-white font-semibold py-2 px-6 rounded-lg shadow-md hover:bg-yellow-500 flex items-center space-x-2 transform hover:scale-105 transition-all"
           >
-            Login
-          </Link>
+            <span>Logout</span>
+          </button>
         </div>
+      </div>
 
-        {/* Mobile Menu Button */}
+      {/* User Profile Component */}
+
+{/* Mobile Menu Button */}
         <button
           className="md:hidden text-gray-800 focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
@@ -74,9 +97,8 @@ const Header: React.FC = () => {
             />
           </svg>
         </button>
-      </div>
 
-      {/* Mobile Menu */}
+{/* Mobile Menu */}
       {isOpen && (
         <div className="md:hidden mt-4 space-y-2">
           <Link
@@ -115,4 +137,4 @@ const Header: React.FC = () => {
   );
 };
 
-export default Header;
+export default HeaderWithLogin;

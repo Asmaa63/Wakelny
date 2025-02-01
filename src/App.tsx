@@ -1,40 +1,114 @@
-import React from 'react';
-import { BrowserRouter as Router, Routes, Route } from 'react-router-dom';
-import Header from './Components/Header/Header';
-import HomePage from './Components/Pages/HomePage';
-import UserOptions from './Components/Pages/UserOptions';
-import UserStep1 from './Components/User/UserStep1';
-import UserStep2 from './Components/User/UserStep2';
-import LowyerStep2 from './Components/Lawyers/LowyerStep2';
-import LowyerStep1 from './Components/Lawyers/LawyerStep1';
-import UserStep3 from './Components/User/UserStep3';
-import LowyerStep3 from './Components/Lawyers/LowyerStep3';
-import Login from './Components/Login/Login';
-import UserOptionGetStart from './Components/Pages/UserOptionGetStart';
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import Header from "./Components/Header/Header";
+import Home from "./Components/Pages/Home";
+import UserOptions from "./Components/Pages/UserOptions";
+import Login from "./Components/Login/Login";
+import UserOptionGetStart from "./Components/Pages/UserOptionGetStart";
+import RegisterClient from "./Components/User/RegisterClient";
+import ConfirmDetailsClient from "./Components/User/ConfirmDetailsClient";
+import RegisterLawyer from "./Components/Lawyers/RegisterLowyer";
+import ConfirmDetailsLawyer from "./Components/Lawyers/ConfirmDetailsLawyer";
+import { useEffect } from 'react';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from './FireBase/firebaseLowyerRegister';
+import HomePage from "./Components/Pages/HomePage";
+import HeaderWithLogin from "./Components/Header/HeaderWithLogin";
+import UserProfile from "./Components/Pages/UserProfile";
+import { ToastContainer } from "react-toastify";
+
 
 const App: React.FC = () => {
+  
+  useEffect(() => {
+    // متابعة حالة المستخدم عند فتح التطبيق
+    onAuthStateChanged(auth, (user) => {
+      if (user) {
+        console.log("User is logged in:", user);
+      } else {
+        console.log("No user is logged in.");
+      }
+    });
+  }, []);
+
   return (
     <Router>
-      {/* Header component */}
-      <Header />
-      
-      {/* Define Routes */}
+      {/* Header Component */}
+      {/* <Header /> */}
+      {/* <HeaderWithLogin/> */}
+      <ToastContainer />
+      {/* Application Routes */}
       <Routes>
-        <Route path="/" element={
-          <>
-          <HomePage />
-          <UserOptions/>
-          </>
+        {/* Home Page */}
+        <Route
+          path="/"
+          element={
+            <>
+              <Header/>
+              <Home />
+              <UserOptions />
+            </>
+          }
+        />
+
+        {/* User Get Started */}
+        <Route path="/getstart" element={
+        <>
+          <Header/>
+          <UserOptionGetStart />
+        </>
         } />
-        <Route path="/getstart" element={<UserOptionGetStart/> } />
-        <Route path="/ClientStep1" element={<UserStep1 />} />
-        <Route  path="/userstep2" element={<UserStep2/>} />
-        <Route  path="/userstep3" element={<UserStep3/> } />
-        <Route path="/lowyertStep1" element={<LowyerStep1/> } />
-        <Route path='/lowyerstep2'element={<LowyerStep2/> } />
-        <Route path='/lowyerstep3'element={<LowyerStep3/> } />
-        <Route path='/login'element={<Login/> } />
+
+        {/* Client Registration Steps */}
+        <Route
+          path="/ClientStep1"
+          element={
+            <>
+            <Header/>
+             <RegisterClient/> 
+             </>
+            }
+        />
+        <Route
+          path="/clientstep2"
+          element={
+            <>
+            <Header/>
+          <ConfirmDetailsClient/>
+          </>
+         }
+        />
+
+        {/* Lawyer Registration Steps */}
+         <Route
+          path="/lowyerStep1"
+          element={
+            <>
+            <Header/>
+          <RegisterLawyer/> 
+          </>
+        }
+        />
+        <Route path="/lowyerstep2" element={
+          <>
+            <Header/>
+        <ConfirmDetailsLawyer/> 
+        </>
+        } />
+
+        <Route path="/login" element={
+          <>
+            <Header/>
+        <Login />
+        </>
+        } />
+        <Route path="/HomePage" element={<HomePage/> } />
+        <Route path="/profile" element={<>
+        <HeaderWithLogin/>
+        <UserProfile/>
+        </> } />
+
       </Routes>
+
     </Router>
   );
 };

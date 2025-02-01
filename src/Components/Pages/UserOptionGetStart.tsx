@@ -22,7 +22,7 @@ const UserOptionGetStart: React.FC = () => {
           <p className="text-gray-600 mb-4">
             Become a part of our network and connect with potential clients.
           </p>
-          <Link to="/lowyertStep1" className="bg-yellow-400 text-white font-medium py-2 px-6 rounded-lg hover:bg-yellow-500">
+          <Link to="/lowyerStep1" className="bg-yellow-400 text-white font-medium py-2 px-6 rounded-lg hover:bg-yellow-500">
             Sign Up / In
           </Link>
         </div>
