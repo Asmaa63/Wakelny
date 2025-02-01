@@ -9,8 +9,7 @@ import toast from "react-hot-toast";
 
 const HeaderWithLogin: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  const [user, setUser] = useState<any>(null);
-  const [showProfile, setShowProfile] = useState(false);
+  const [ setUser] = useState<any>(null);
   const navigate = useNavigate();
 
   useEffect(() => {
@@ -73,11 +72,6 @@ const HeaderWithLogin: React.FC = () => {
             <span>Logout</span>
           </button>
         </div>
-      </div>
-
-      {/* User Profile Component */}
-
-{/* Mobile Menu Button */}
         <button
           className="md:hidden text-gray-800 focus:outline-none"
           onClick={() => setIsOpen(!isOpen)}
@@ -97,6 +91,17 @@ const HeaderWithLogin: React.FC = () => {
             />
           </svg>
         </button>
+      </div>
+
+
+
+
+
+
+      {/* User Profile Component */}
+
+{/* Mobile Menu Button */}
+        
 
 {/* Mobile Menu */}
       {isOpen && (
