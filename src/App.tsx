@@ -15,7 +15,7 @@ import HomePage from "./Components/Pages/HomePage";
 import HeaderWithLogin from "./Components/Header/HeaderWithLogin";
 import UserProfile from "./Components/Pages/UserProfile";
 import { ToastContainer } from "react-toastify";
-import LawyerProfile from "./Components/Pages/LawyerProfile";
+import LawyerProfile from "./Components/Pages/LawyerProfile"
 
 const App: React.FC = () => {
   
