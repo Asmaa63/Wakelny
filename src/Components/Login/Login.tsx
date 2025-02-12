@@ -1,8 +1,14 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
-import { auth } from "../../FireBase/firebaseLowyerRegister"; // Ensure auth is correctly imported
-import { signInWithEmailAndPassword } from "firebase/auth";
+import { auth } from "../../FireBase/firebaseLowyerRegister"; // تأكدي من إعداد Firebase بشكل صحيح
+import {
+  signInWithEmailAndPassword,
+  signInWithPopup,
+  GoogleAuthProvider,
+  FacebookAuthProvider,
+  TwitterAuthProvider,
+} from "firebase/auth";
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
@@ -13,6 +19,7 @@ const Login: React.FC = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
+  // تسجيل الدخول باستخدام البريد وكلمة المرور
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -20,7 +27,7 @@ const Login: React.FC = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast.success("Login successful!", { position: "top-center", autoClose: 2000 });
-      navigate("/HomePage"); // Redirect to the home page after successful login
+      navigate("/HomePage"); // إعادة التوجيه إلى الصفحة الرئيسية بعد تسجيل الدخول
     } catch (error: any) {
       console.error("Login Error:", error);
       const errorCode = error.code;
@@ -37,11 +44,28 @@ const Login: React.FC = () => {
     }
   };
 
+  // دالة لتسجيل الدخول الاجتماعي باستخدام المزوّد المناسب
+  const handleSocialLogin = async (provider: any) => {
+    try {
+      await signInWithPopup(auth, provider);
+      toast.success("Login successful!", { position: "top-center", autoClose: 2000 });
+      navigate("/HomePage");
+    } catch (error) {
+      console.error("Social login error:", error);
+      toast.error("An error occurred. Please try again.", { position: "top-center", autoClose: 3000 });
+    }
+  };
+
+  // إنشاء مثيلات لمزودي المصادقة
+  const googleProvider = new GoogleAuthProvider();
+  const facebookProvider = new FacebookAuthProvider();
+  const twitterProvider = new TwitterAuthProvider();
+
   return (
     <div className="pt-24 pb-6 flex items-center justify-center min-h-screen bg-gray-50">
       <ToastContainer />
       <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-4 text-yellow-500">Client Login</h1>
+        <h1 className="text-2xl font-bold text-center mb-4 text-yellow-500">Login</h1>
 
         <input
           type="email"
@@ -68,12 +92,13 @@ const Login: React.FC = () => {
           {loading ? "Logging in..." : "Login"}
         </button>
 
-        {/* Social Login Options */}
+        {/* خيارات تسجيل الدخول الاجتماعي */}
         <div className="mt-6">
           <p className="text-center text-gray-600 mb-4">Or sign in with</p>
           <div className="flex flex-col space-y-4">
             <button
               type="button"
+              onClick={() => handleSocialLogin(googleProvider)}
               className="flex items-center justify-center w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
             >
               <FaGoogle className="mr-2" />
@@ -81,6 +106,7 @@ const Login: React.FC = () => {
             </button>
             <button
               type="button"
+              onClick={() => handleSocialLogin(facebookProvider)}
               className="flex items-center justify-center w-full bg-blue-700 text-white py-2 px-4 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
             >
               <FaFacebook className="mr-2" />
@@ -88,6 +114,7 @@ const Login: React.FC = () => {
             </button>
             <button
               type="button"
+              onClick={() => handleSocialLogin(twitterProvider)}
               className="flex items-center justify-center w-full bg-sky-400 text-white py-2 px-4 rounded hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-300"
             >
               <FaTwitter className="mr-2" />

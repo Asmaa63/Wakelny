@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../FireBase/firebaseLowyerRegister";
 import { FaUserCircle } from "react-icons/fa";
+import { useNavigate } from "react-router-dom"; // استيراد التنقل
 
 interface Lawyer {
   id: string;
@@ -19,6 +20,7 @@ interface LawyersListProps {
 
 const LawyersList: React.FC<LawyersListProps> = ({ searchQuery, selectedGov, selectedCategories }) => {
   const [lawyers, setLawyers] = useState<Lawyer[]>([]);
+  const navigate = useNavigate(); // استخدام التنقل
 
   useEffect(() => {
     const fetchLawyers = async () => {
@@ -40,7 +42,7 @@ const LawyersList: React.FC<LawyersListProps> = ({ searchQuery, selectedGov, sel
   const filteredLawyers = lawyers.filter((lawyer) =>
     lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
     (!selectedGov || lawyer.location === selectedGov) &&
-    ( selectedCategories.length === 0 || lawyer.practiceAreas?.some(area => selectedCategories.includes(area)))
+    (selectedCategories.length === 0 || lawyer.practiceAreas?.some(area => selectedCategories.includes(area)))
   );
 
   return (
@@ -50,7 +52,8 @@ const LawyersList: React.FC<LawyersListProps> = ({ searchQuery, selectedGov, sel
           {filteredLawyers.map((lawyer) => (
             <div
               key={lawyer.id}
-              className="bg-white shadow-lg rounded-lg p-4 text-center border border-yellow-500"
+              className="bg-white shadow-lg rounded-lg p-4 text-center border border-yellow-500 cursor-pointer"
+              onClick={() => navigate(`/lawyer/${lawyer.id}`)} // التنقل عند الضغط
             >
               {/* صورة المحامي */}
               {lawyer.image ? (
@@ -69,8 +72,8 @@ const LawyersList: React.FC<LawyersListProps> = ({ searchQuery, selectedGov, sel
               {/* المجالات القانونية */}
               <p className="text-sm text-yellow-600 font-medium mt-1">
                 {lawyer.practiceAreas && lawyer.practiceAreas.length > 0 
-    ? lawyer.practiceAreas.join(" / ") 
-    : "Not specified"}
+                  ? lawyer.practiceAreas.join(" / ") 
+                  : "Not specified"}
               </p>
 
               {/* المحافظة */}

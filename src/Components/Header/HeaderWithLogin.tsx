@@ -43,7 +43,9 @@ const HeaderWithLogin: React.FC = () => {
         {/* Logo */}
         <div className="flex items-center">
           <FaGavel className="text-yellow-500 text-4xl mr-2" />
+          <Link to="/">
           <span className="text-3xl font-bold text-gray-800">Wakelny</span>
+          </Link>
         </div>
 
         {/* Navigation Links */}
