@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { auth, db } from "../../FireBase/firebaseLowyerRegister";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { FaEdit, FaSave, FaCamera, FaUser, FaCheck, FaTimes } from "react-icons/fa";
+import { FaEdit, FaSave, FaCamera, FaUser} from "react-icons/fa";
 
 const UserProfile: React.FC = () => {
   const [user, setUser] = useState<any>(null);
