@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../FireBase/firebaseLowyerRegister";
-import { FaUserCircle } from "react-icons/fa";
-import { useNavigate } from "react-router-dom"; // استيراد التنقل
+import { FaUserCircle, FaHeart } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 interface Lawyer {
   id: string;
@@ -20,8 +20,10 @@ interface LawyersListProps {
 
 const LawyersList: React.FC<LawyersListProps> = ({ searchQuery, selectedGov, selectedCategories }) => {
   const [lawyers, setLawyers] = useState<Lawyer[]>([]);
-  const navigate = useNavigate(); // استخدام التنقل
+  const [favorites, setFavorites] = useState<string[]>([]); // قائمة المفضلين
+  const navigate = useNavigate();
 
+  // تحميل المحامين من Firebase
   useEffect(() => {
     const fetchLawyers = async () => {
       const querySnapshot = await getDocs(collection(db, "Lawyers"));
@@ -29,7 +31,7 @@ const LawyersList: React.FC<LawyersListProps> = ({ searchQuery, selectedGov, sel
         id: doc.id,
         name: doc.data().name || "Unknown",
         image: doc.data().image || "",
-        practiceAreas: doc.data().practiceAreas || [],
+        practiceAreas: Array.isArray(doc.data().practiceAreas) ? doc.data().practiceAreas : [],
         location: doc.data().location || "Unknown location",
       }));
       setLawyers(lawyersData);
@@ -38,11 +40,30 @@ const LawyersList: React.FC<LawyersListProps> = ({ searchQuery, selectedGov, sel
     fetchLawyers();
   }, []);
 
-  // تصفية المحامين بناءً على البحث والمحافظة والفئات المختارة
-  const filteredLawyers = lawyers.filter((lawyer) =>
-    lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
-    (!selectedGov || lawyer.location === selectedGov) &&
-    (selectedCategories.length === 0 || lawyer.practiceAreas?.some(area => selectedCategories.includes(area)))
+  // تحميل قائمة المفضلين من localStorage عند تشغيل التطبيق
+  useEffect(() => {
+    const savedFavorites = JSON.parse(localStorage.getItem("favoriteLawyers") || "[]");
+    setFavorites(savedFavorites);
+  }, []);
+
+  // دالة لحفظ/إزالة المحامي من المفضلين
+  const toggleFavorite = (lawyerId: string) => {
+    let updatedFavorites;
+    if (favorites.includes(lawyerId)) {
+      updatedFavorites = favorites.filter((id) => id !== lawyerId); // إزالة المحامي من المفضلين
+    } else {
+      updatedFavorites = [...favorites, lawyerId]; // إضافة المحامي للمفضلين
+    }
+    setFavorites(updatedFavorites);
+    localStorage.setItem("favoriteLawyers", JSON.stringify(updatedFavorites)); // تحديث localStorage
+  };
+
+  // تصفية المحامين حسب البحث والفلاتر
+  const filteredLawyers = lawyers.filter(
+    (lawyer) =>
+      lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
+      (!selectedGov || lawyer.location === selectedGov) &&
+      (selectedCategories.length === 0 || lawyer.practiceAreas?.some((area) => selectedCategories.includes(area)))
   );
 
   return (
@@ -52,32 +73,40 @@ const LawyersList: React.FC<LawyersListProps> = ({ searchQuery, selectedGov, sel
           {filteredLawyers.map((lawyer) => (
             <div
               key={lawyer.id}
-              className="bg-white shadow-lg rounded-lg p-4 text-center border border-yellow-500 cursor-pointer"
-              onClick={() => navigate(`/lawyer/${lawyer.id}`)} // التنقل عند الضغط
+              className="relative bg-white shadow-lg rounded-lg p-4 text-center border border-yellow-500 cursor-pointer"
             >
-              {/* صورة المحامي */}
-              {lawyer.image ? (
-                <img
-                  src={lawyer.image}
-                  alt={lawyer.name}
-                  className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-yellow-500"
-                />
-              ) : (
-                <FaUserCircle className="w-24 h-24 text-gray-400 mx-auto" />
-              )}
+              {/* أيقونة القلب لإضافة للمفضلين */}
+              <FaHeart
+                className={`absolute top-3 right-3 text-2xl cursor-pointer ${
+                  favorites.includes(lawyer.id) ? "text-red-500" : "text-gray-400"
+                }`}
+                onClick={(e) => {
+                  e.stopPropagation(); // لمنع الانتقال إلى صفحة المحامي عند الضغط على القلب
+                  toggleFavorite(lawyer.id);
+                }}
+              />
 
-              {/* اسم المحامي */}
-              <h3 className="text-lg font-semibold mt-3">{lawyer.name}</h3>
+              <div onClick={() => navigate(`/lawyer/${lawyer.id}`)}>
+                {lawyer.image ? (
+                  <img
+                    src={lawyer.image}
+                    alt={lawyer.name}
+                    className="w-24 h-24 rounded-full mx-auto object-cover border-2 border-yellow-500"
+                  />
+                ) : (
+                  <FaUserCircle className="w-24 h-24 text-gray-400 mx-auto" />
+                )}
 
-              {/* المجالات القانونية */}
-              <p className="text-sm text-yellow-600 font-medium mt-1">
-                {lawyer.practiceAreas && lawyer.practiceAreas.length > 0 
-                  ? lawyer.practiceAreas.join(" / ") 
-                  : "Not specified"}
-              </p>
+                <h3 className="text-lg font-semibold mt-3">{lawyer.name}</h3>
 
-              {/* المحافظة */}
-              <p className="text-sm text-gray-500 mt-1">{lawyer.location}</p>
+                <p className="text-sm text-yellow-600 font-medium mt-1">
+                  {Array.isArray(lawyer.practiceAreas) && lawyer.practiceAreas.length > 0
+                    ? lawyer.practiceAreas.join(" / ")
+                    : "Not specified"}
+                </p>
+
+                <p className="text-sm text-gray-500 mt-1">{lawyer.location}</p>
+              </div>
             </div>
           ))}
         </div>

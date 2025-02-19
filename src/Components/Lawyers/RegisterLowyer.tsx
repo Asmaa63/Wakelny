@@ -18,6 +18,7 @@ const RegisterLawyer: React.FC = () => {
     location: "",
     experience: "",
     practiceAreas: [] as string[],
+    aboutMe: "",
     email: "",
     password: "",
     confirmPassword: "",
@@ -28,7 +29,7 @@ const RegisterLawyer: React.FC = () => {
   const [loading, setLoading] = useState(false);
 
   const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
   ) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
     setFormData({
@@ -66,13 +67,14 @@ const RegisterLawyer: React.FC = () => {
 
     navigate("/HomePage");
 
-    await setDoc(doc(db, "Lawyers", userCredential.user.uid), {
+  await setDoc(doc(db, "Lawyers", userCredential.user.uid), {
   name: formData.name,
   phone: formData.phone,
   location: formData.location,
   experience: formData.experience,
   practiceAreas: formData.practiceAreas,
   email: formData.email,
+  details: formData.aboutMe, // تخزين aboutMe كـ details هنا
 });
 
     console.log("User Data Saved in Firestore");
@@ -163,6 +165,7 @@ const handleCheckboxChange = (area: string) => {
           <input type="password" name="password" placeholder="Create Password" value={formData.password} onChange={handleChange} className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500" required />
           <input type="password" name="confirmPassword" placeholder="Confirm Password" value={formData.confirmPassword} onChange={handleChange} className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500" required />
         </div>
+<textarea className="border border-gray-300 rounded-lg p-2 w-full mt-4 focus:outline-none focus:ring-2 focus:ring-yellow-500" name="aboutMe" placeholder="About Me" value={formData.aboutMe} onChange={handleChange} required /> 
 
 <div className="flex items-center mt-4 pb-4">
   <input
@@ -173,6 +176,7 @@ const handleCheckboxChange = (area: string) => {
     onChange={handleChange}
     className="mr-2 w-5 h-5 text-yellow-500 focus:ring-yellow-500"
   />
+  
   <label htmlFor="agree" className="text-gray-700 ">
     I agree to the <Link to="/terms" className="text-yellow-500 underline">terms and conditions</Link>
   </label>

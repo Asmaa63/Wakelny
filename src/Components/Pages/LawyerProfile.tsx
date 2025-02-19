@@ -8,6 +8,7 @@ import {
   FaMapMarkerAlt,
   FaBriefcase,
   FaInfoCircle,
+  FaHeart,
 } from "react-icons/fa";
 
 interface Lawyer {
@@ -25,32 +26,67 @@ const LawyerProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [lawyer, setLawyer] = useState<Lawyer | null>(null);
+  const [isFavorite, setIsFavorite] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchLawyer = async () => {
       if (!id) return;
       const docRef = doc(db, "Lawyers", id);
       const docSnap = await getDoc(docRef);
+
       if (docSnap.exists()) {
-        setLawyer({ id: docSnap.id, ...docSnap.data() } as Lawyer);
+        const lawyerData = docSnap.data();
+        setLawyer({ ...lawyerData, id: docSnap.id } as Lawyer);
       } else {
         console.error("No such lawyer found!");
       }
     };
+
     fetchLawyer();
   }, [id]);
 
+  // تحميل حالة المفضلين عند فتح الصفحة
+  useEffect(() => {
+    const savedFavorites = JSON.parse(localStorage.getItem("favoriteLawyers") || "[]");
+    if (id && savedFavorites.includes(id)) {
+      setIsFavorite(true);
+    }
+  }, [id]);
+
+  // دالة لإضافة/إزالة المحامي من المفضلين
+  const toggleFavorite = () => {
+    if (!id) return;
+    const savedFavorites = JSON.parse(localStorage.getItem("favoriteLawyers") || "[]");
+    let updatedFavorites;
+
+    if (isFavorite) {
+      updatedFavorites = savedFavorites.filter((favId: string) => favId !== id); // إزالة من المفضلين
+    } else {
+      updatedFavorites = [...savedFavorites, id]; // إضافة إلى المفضلين
+    }
+
+    localStorage.setItem("favoriteLawyers", JSON.stringify(updatedFavorites));
+    setIsFavorite(!isFavorite);
+  };
+
   if (!lawyer) {
     return (
-      <p className="text-center text-gray-500 mt-10">
-        Loading lawyer profile...
-      </p>
+      <p className="text-center text-gray-500 mt-10">Loading lawyer profile...</p>
     );
   }
 
   return (
     <div className="pt-24 flex justify-center px-4 sm:px-6 lg:px-8">
-      <div className="w-full max-w-2xl p-6 bg-white shadow-lg rounded-lg border border-yellow-500">
+      <div className="w-full max-w-2xl p-6 bg-white shadow-lg rounded-lg border border-yellow-500 relative">
+        
+        {/* أيقونة القلب لحفظ المحامي في المفضلين */}
+        <FaHeart
+          className={`absolute top-4 right-4 text-3xl cursor-pointer ${
+            isFavorite ? "text-red-500" : "text-gray-400"
+          }`}
+          onClick={toggleFavorite}
+        />
+
         {/* صورة المحامي */}
         <div className="flex justify-center">
           {lawyer.image ? (
@@ -89,7 +125,7 @@ const LawyerProfile: React.FC = () => {
           </p>
           <p className="flex items-center gap-2">
             <FaInfoCircle className="text-yellow-500" /> <strong>Details:</strong>{" "}
-            {lawyer.details || "No additional details provided."}
+            {lawyer.details ? lawyer.details : "No additional details available at the moment."}
           </p>
         </div>
 

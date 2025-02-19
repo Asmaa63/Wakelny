@@ -59,6 +59,9 @@ const HeaderWithLogin: React.FC = () => {
           <Link to="/HomePage" className="text-gray-800 hover:text-yellow-500 font-medium text-lg">
             Search
           </Link>
+          <Link to="/FavoriteLowyer" className="text-gray-800 hover:text-yellow-500 font-medium text-lg">
+            Favorite
+          </Link>
 
           {/* Profile Icon */}
           <Link to="/profile" className="relative text-gray-800 hover:text-yellow-500 text-lg border rounded-full p-2 border-yellow-400">
@@ -125,6 +128,12 @@ const HeaderWithLogin: React.FC = () => {
             className="block text-gray-800 hover:text-yellow-500 text-lg"
           >
             Search
+          </Link>
+          <Link
+            to="/FavoriteLowyer"
+            className="block text-gray-800 hover:text-yellow-500 text-lg"
+          >
+           favorite 
           </Link>
           <Link
             to="/profile"

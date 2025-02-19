@@ -16,6 +16,7 @@ import HeaderWithLogin from "./Components/Header/HeaderWithLogin";
 import UserProfile from "./Components/Pages/UserProfile";
 import { ToastContainer } from "react-toastify";
 import LawyerProfile from "./Components/Pages/LawyerProfile"
+import FavoriteLawyers from "./Components/Pages/FavoriteLawyers";
 
 const App: React.FC = () => {
   
@@ -102,11 +103,15 @@ const App: React.FC = () => {
         </>
         } />
         <Route path="/HomePage" element={<HomePage/> } />
+        <Route path="/FavoriteLowyer" element={<>
+        <HeaderWithLogin/>
+        <FavoriteLawyers/>
+        </> } />
         <Route path="/profile" element={<>
         <HeaderWithLogin/>
         <UserProfile/>
         </> } />
-
+        
         <Route path="/lawyer/:id" element={
           <>
           <HeaderWithLogin/>
