@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { auth, db } from "../../FireBase/firebaseLowyerRegister";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
-import { FaEdit, FaSave, FaCamera, FaUser} from "react-icons/fa";
+import { FaEdit, FaSave, FaCamera, FaUser } from "react-icons/fa";
 
 const UserProfile: React.FC = () => {
   const [user, setUser] = useState<any>(null);
@@ -11,7 +11,7 @@ const UserProfile: React.FC = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [userType, setUserType] = useState<string | null>(null);
   const practiceAreasOptions = ["State Council", "Civil", "Misdemeanor", "Criminal", "Family", "Economic"];
-  
+
   useEffect(() => {
     const fetchUserData = async () => {
       const currentUser = auth.currentUser;
@@ -21,6 +21,7 @@ const UserProfile: React.FC = () => {
       }
       const lawyerDoc = await getDoc(doc(db, "Lawyers", currentUser.uid));
       const clientDoc = await getDoc(doc(db, "clients", currentUser.uid));
+
       if (lawyerDoc.exists()) {
         setUserType("Lawyer");
         setUser({ type: "Lawyer", ...lawyerDoc.data() });
@@ -45,6 +46,7 @@ const UserProfile: React.FC = () => {
     setIsEditing(false);
     try {
       const userDocRef = doc(db, userType === "Lawyer" ? "Lawyers" : "clients", auth.currentUser.uid);
+
       if (imageFile) {
         const storage = getStorage();
         const storageRef = ref(storage, `profilePictures/${auth.currentUser.uid}`);
@@ -53,10 +55,15 @@ const UserProfile: React.FC = () => {
         setUser({ ...user, profileImage: imageUrl });
         await updateDoc(userDocRef, { profileImage: imageUrl });
       }
+
       await updateDoc(userDocRef, user);
     } catch (error) {
       console.error("Error updating profile:", error);
     }
+  };
+
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+    setUser({ ...user, [e.target.name]: e.target.value });
   };
 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -107,21 +114,34 @@ const UserProfile: React.FC = () => {
             </>
           )}
         </div>
-        <h2 className="text-3xl font-bold text-yellow-500 mt-4">{user.name}</h2>
+        <h2 className="text-3xl font-bold text-yellow-500 mt-4">
+          {isEditing ? <input name="name" value={user.name} onChange={handleInputChange} className="border p-1 rounded-lg" /> : user.name}
+        </h2>
         <div className="text-gray-700 space-y-4 mt-4 text-left">
-          <p><strong className="text-yellow-500">Details:</strong> {user.details || "Not provided"}</p>
-          <p><strong className="text-yellow-500">Phone:</strong> {user.phone || "Not provided"}</p>
+          <p><strong className="text-yellow-500">Phone:</strong> 
+            {isEditing ? <input name="phone" value={user.phone} onChange={handleInputChange} className="border p-1 rounded-lg w-full" /> : user.phone}
+          </p>
           <p><strong className="text-yellow-500">Email:</strong> {user.email}</p>
+
           {userType === "Lawyer" && (
             <>
-              <p><strong className="text-yellow-500">Experience:</strong> {user.experience || "Not provided"}</p>
-              <p><strong className="text-yellow-500">Location:</strong> {user.location || "Not provided"}</p>
-              <p><strong className="text-yellow-500">Practice Areas:</strong> {isEditing ? practiceAreasOptions.map(area => (
-                <label key={area} className="block">
-                  <input type="checkbox" checked={user.practiceAreas.includes(area)} onChange={() => togglePracticeArea(area)} className="mr-2" />
-                  {area}
-                </label>
-              )) : user.practiceAreas.join(", ") || "Not provided"}</p>
+              <p><strong className="text-yellow-500">About:</strong> 
+                {isEditing ? <textarea name="details" value={user.details} onChange={handleInputChange} className="border p-1 rounded-lg w-full" rows={3} /> : user.details}
+              </p>
+              <p><strong className="text-yellow-500">Experience:</strong> 
+                {isEditing ? <textarea name="experience" value={user.experience} onChange={handleInputChange} className="border p-1 rounded-lg w-full" /> : user.experience}
+              </p>
+              <p><strong className="text-yellow-500">Location:</strong> 
+                {isEditing ? <input name="location" value={user.location} onChange={handleInputChange} className="border p-1 rounded-lg w-full" /> : user.location}
+              </p>
+              <p><strong className="text-yellow-500">Practice Areas:</strong> 
+                {isEditing ? practiceAreasOptions.map(area => (
+                  <label key={area} className="block">
+                    <input type="checkbox" checked={user.practiceAreas.includes(area)} onChange={() => togglePracticeArea(area)} className="mr-2" />
+                    {area}
+                  </label>
+                )) : user.practiceAreas.join(", ")}
+              </p>
             </>
           )}
         </div>
