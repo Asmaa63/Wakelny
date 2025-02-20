@@ -17,6 +17,7 @@ import UserProfile from "./Components/Pages/UserProfile";
 import { ToastContainer } from "react-toastify";
 import LawyerProfile from "./Components/Pages/LawyerProfile"
 import FavoriteLawyers from "./Components/Pages/FavoriteLawyers";
+import ReviewsPage from "./Components/Pages/ReviewsPage";
 
 const App: React.FC = () => {
   
@@ -118,6 +119,12 @@ const App: React.FC = () => {
           <LawyerProfile />
           </>
         } />
+        <Route path="/lawyer/:id/reviews" element={
+          <>
+          <HeaderWithLogin/>
+          <ReviewsPage/>
+          </>
+         } />
         
       </Routes>
 
