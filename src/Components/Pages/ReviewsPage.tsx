@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import { doc, collection, addDoc } from "firebase/firestore";
+import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../FireBase/firebaseLowyerRegister";
 import { FaStar } from "react-icons/fa";
 import toast from "react-hot-toast";

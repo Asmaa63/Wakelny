@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
-import { auth } from "../../FireBase/firebaseLowyerRegister"; // تأكدي من إعداد Firebase بشكل صحيح
+import { auth } from "../../FireBase/firebaseLowyerRegister";
 import {
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -16,10 +16,10 @@ import { ToastContainer } from "react-toastify";
 const Login: React.FC = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
-  // تسجيل الدخول باستخدام البريد وكلمة المرور
   const handleLogin = async (e: React.FormEvent) => {
     e.preventDefault();
     setLoading(true);
@@ -27,24 +27,32 @@ const Login: React.FC = () => {
     try {
       await signInWithEmailAndPassword(auth, email, password);
       toast.success("Login successful!", { position: "top-center", autoClose: 2000 });
-      navigate("/HomePage"); // إعادة التوجيه إلى الصفحة الرئيسية بعد تسجيل الدخول
+      navigate("/HomePage");
     } catch (error: any) {
       console.error("Login Error:", error);
       const errorCode = error.code;
 
       if (errorCode === "auth/wrong-password") {
-        toast.error("Incorrect password. Please try again.", { position: "top-center", autoClose: 3000 });
+        toast.error("Incorrect password. Please try again.", {
+          position: "top-center",
+          autoClose: 3000,
+        });
       } else if (errorCode === "auth/user-not-found") {
-        toast.error("No account found with this email. Please check or sign up.", { position: "top-center", autoClose: 3000 });
+        toast.error("No account found with this email. Please check or sign up.", {
+          position: "top-center",
+          autoClose: 3000,
+        });
       } else {
-        toast.error("An unexpected error occurred. Please try again.", { position: "top-center", autoClose: 3000 });
+        toast.error("An unexpected error occurred. Please try again.", {
+          position: "top-center",
+          autoClose: 3000,
+        });
       }
     } finally {
       setLoading(false);
     }
   };
 
-  // دالة لتسجيل الدخول الاجتماعي باستخدام المزوّد المناسب
   const handleSocialLogin = async (provider: any) => {
     try {
       await signInWithPopup(auth, provider);
@@ -52,11 +60,13 @@ const Login: React.FC = () => {
       navigate("/HomePage");
     } catch (error) {
       console.error("Social login error:", error);
-      toast.error("An error occurred. Please try again.", { position: "top-center", autoClose: 3000 });
+      toast.error("An error occurred. Please try again.", {
+        position: "top-center",
+        autoClose: 3000,
+      });
     }
   };
 
-  // إنشاء مثيلات لمزودي المصادقة
   const googleProvider = new GoogleAuthProvider();
   const facebookProvider = new FacebookAuthProvider();
   const twitterProvider = new TwitterAuthProvider();
@@ -75,14 +85,24 @@ const Login: React.FC = () => {
           className="border border-gray-300 rounded px-4 py-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400"
           required
         />
-        <input
-          type="password"
-          placeholder="Password"
-          value={password}
-          onChange={(e) => setPassword(e.target.value)}
-          className="border border-gray-300 rounded px-4 py-2 mb-6 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400"
-          required
-        />
+
+        <div className="relative mb-6">
+          <input
+            type={showPassword ? "text" : "password"}
+            placeholder="Password"
+            value={password}
+            onChange={(e) => setPassword(e.target.value)}
+            className="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400"
+            required
+          />
+          <button
+            type="button"
+            onClick={() => setShowPassword(!showPassword)}
+            className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
+          >
+            {showPassword ? "Hide" : "Show"}
+          </button>
+        </div>
 
         <button
           type="submit"
@@ -92,7 +112,6 @@ const Login: React.FC = () => {
           {loading ? "Logging in..." : "Login"}
         </button>
 
-        {/* خيارات تسجيل الدخول الاجتماعي */}
         <div className="mt-6">
           <p className="text-center text-gray-600 mb-4">Or sign in with</p>
           <div className="flex flex-col space-y-4">
