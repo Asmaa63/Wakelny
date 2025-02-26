@@ -3,13 +3,11 @@ import { Link, useNavigate } from "react-router-dom";
 import { FiUser, FiPlus } from "react-icons/fi";
 import { auth } from "../../FireBase/firebaseLowyerRegister";
 import { createUserWithEmailAndPassword } from "firebase/auth";
-import toast from "react-hot-toast";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../FireBase/firebaseLowyerRegister";
 
 const RegisterLawyer: React.FC = () => {
   const navigate = useNavigate();
-
   const [formData, setFormData] = useState({
     name: "",
     phone: "",
@@ -25,12 +23,14 @@ const RegisterLawyer: React.FC = () => {
 
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [success, setSuccess] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
+  const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-  const handleChange = (
-    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement | HTMLTextAreaElement>
-  ) => {
+
+  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
     setFormData({
       ...formData,
@@ -40,25 +40,19 @@ const RegisterLawyer: React.FC = () => {
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
+    setError(null);
 
     if (!formData.agree) {
-      toast.error("You must agree to the terms and conditions.");
+      setError("You must agree to the terms and conditions.");
       return;
     }
-
     if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match.");
+      setError("Passwords do not match.");
       return;
     }
-
     setLoading(true);
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        formData.email,
-        formData.password
-      );
-      toast.success("Registration successful!");
+      const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
       await setDoc(doc(db, "Lawyers", userCredential.user.uid), {
         name: formData.name,
         phone: formData.phone,
@@ -68,10 +62,16 @@ const RegisterLawyer: React.FC = () => {
         email: formData.email,
         details: formData.aboutMe,
       });
-      navigate("/HomePage");
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
+      setSuccess(true);
+    } 
+    catch (error: any) {
+  if (error.code === "auth/email-already-in-use") {
+    setErrorMessage("This email is already registered. Please use a different email.");
+  } else {
+    setErrorMessage(error.message);
+  }
+}
+    finally {
       setLoading(false);
     }
   };
@@ -256,6 +256,40 @@ const RegisterLawyer: React.FC = () => {
           {loading ? "Registering..." : "Register"}
         </button>
       </form>
+      {error && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p className="text-red-500 font-semibold">{error}</p>
+            <button onClick={() => setError(null)} className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg">
+              OK
+            </button>
+          </div>
+        </div>
+      )}
+      {errorMessage && (
+  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+    <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+      <h2 className="text-xl font-bold mb-2 text-red-600">Registration Error</h2>
+      <p className="text-gray-700">{errorMessage}</p>
+      <button
+        onClick={() => setErrorMessage(null)}
+        className="mt-4 bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition"
+      >
+        OK
+      </button>
+    </div>
+  </div>
+)}
+      {success && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg">
+            <p className="text-green-500 font-semibold">Registration successful!</p>
+            <button onClick={() => navigate("/login")} className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded-lg">
+              OK
+            </button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

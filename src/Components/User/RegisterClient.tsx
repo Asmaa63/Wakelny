@@ -24,6 +24,8 @@ const RegisterClient: React.FC = () => {
 
   const [image, setImage] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const [showPopup, setShowPopup] = useState(false);
+  const [popupMessage, setPopupMessage] = useState("");
   const [showPassword, setShowPassword] = useState(false);
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 
@@ -85,10 +87,9 @@ const RegisterClient: React.FC = () => {
         imageUrl,
       });
 
-      toast.success("Registration successful!");
-      navigate("/HomePage");
+      setPopupMessage("Registration Successful!");
+      setShowPopup(true);
     } catch (error: any) {
-      console.log("Error during registration:", error);
       toast.error(error.message);
     } finally {
       setLoading(false);
@@ -96,7 +97,7 @@ const RegisterClient: React.FC = () => {
   };
 
   return (
-    <div className="mt-16 flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
+    <div className="mt-16 flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 relative">
       <h1 className="text-4xl font-bold text-yellow-500 mb-6">Register Client</h1>
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
         <div className="flex flex-col items-center mb-6 relative">
@@ -205,6 +206,15 @@ const RegisterClient: React.FC = () => {
           {loading ? "Registering..." : "Register"}
         </button>
       </form>
+
+      {showPopup && (
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg text-center">
+            <h2 className="text-xl font-bold mb-4">{popupMessage}</h2>
+            <button onClick={() => navigate("/login")} className="bg-yellow-500 text-white px-4 py-2 rounded-lg">OK</button>
+          </div>
+        </div>
+      )}
     </div>
   );
 };

@@ -2,6 +2,7 @@ import React, { useState } from "react";
 import { FaChevronDown } from "react-icons/fa";
 
 const governorates = [
+  "All",
   "Cairo", "Giza", "Alexandria", "Dakahlia", "Red Sea", "Beheira", "Fayoum",
   "Gharbiya", "Ismailia", "Menofia", "Minya", "Qaliubiya", "New Valley",
   "Suez", "Aswan", "Assiut", "Beni Suef", "Port Said", "Damietta", "Sharkia",
@@ -44,10 +45,12 @@ const Inputs: React.FC<InputsProps> = ({ setSearchQuery, setSelectedGov }) => {
             {governorates.map((gov, index) => (
               <div
                 key={index}
-                className="px-4 py-2 hover:bg-yellow-100 cursor-pointer transition-all"
+                className={`px-4 py-2 hover:bg-yellow-100 cursor-pointer transition-all ${
+                  selectedGov === gov ? "bg-yellow-100" : ""
+                }`}
                 onClick={() => {
                   setLocalGov(gov);
-                  setSelectedGov(gov);
+                  setSelectedGov(gov === "All" ? "" : gov);
                   setDropdownOpen(false);
                 }}
               >
