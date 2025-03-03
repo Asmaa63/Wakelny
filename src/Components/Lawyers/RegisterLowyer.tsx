@@ -1,12 +1,14 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { FiUser, FiPlus } from "react-icons/fi";
 import { auth } from "../../FireBase/firebaseLowyerRegister";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import { doc, setDoc } from "firebase/firestore";
 import { db } from "../../FireBase/firebaseLowyerRegister";
+import { useTranslation } from "react-i18next";
 
 const RegisterLawyer: React.FC = () => {
+  const { t } = useTranslation();
   const navigate = useNavigate();
   const [formData, setFormData] = useState({
     name: "",
@@ -29,7 +31,6 @@ const RegisterLawyer: React.FC = () => {
   const [showConfirmPassword, setShowConfirmPassword] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
-
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     const { name, value, type, checked } = e.target as HTMLInputElement;
     setFormData({
@@ -43,11 +44,11 @@ const RegisterLawyer: React.FC = () => {
     setError(null);
 
     if (!formData.agree) {
-      setError("You must agree to the terms and conditions.");
+      setError(t("You must agree to the terms and conditions."));
       return;
     }
     if (formData.password !== formData.confirmPassword) {
-      setError("Passwords do not match.");
+      setError(t("Passwords do not match."));
       return;
     }
     setLoading(true);
@@ -63,15 +64,13 @@ const RegisterLawyer: React.FC = () => {
         details: formData.aboutMe,
       });
       setSuccess(true);
-    } 
-    catch (error: any) {
-  if (error.code === "auth/email-already-in-use") {
-    setErrorMessage("This email is already registered. Please use a different email.");
-  } else {
-    setErrorMessage(error.message);
-  }
-}
-    finally {
+    } catch (error: any) {
+      if (error.code === "auth/email-already-in-use") {
+        setErrorMessage(t("This email is already registered. Please use a different email."));
+      } else {
+        setErrorMessage(error.message);
+      }
+    } finally {
       setLoading(false);
     }
   };
@@ -98,7 +97,7 @@ const RegisterLawyer: React.FC = () => {
 
   return (
     <div className="mt-16 flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4">
-      <h1 className="text-4xl font-bold text-yellow-500 mb-6">Register</h1>
+      <h1 className="text-4xl font-bold text-yellow-500 mb-6">{t("register")}</h1>
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl relative">
         <div className="flex flex-col items-center mb-6 relative">
           <label className="cursor-pointer relative">
@@ -125,7 +124,7 @@ const RegisterLawyer: React.FC = () => {
           <input
             type="text"
             name="name"
-            placeholder="Name"
+            placeholder={t("Name")}
             value={formData.name}
             onChange={handleChange}
             className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -134,7 +133,7 @@ const RegisterLawyer: React.FC = () => {
           <input
             type="text"
             name="phone"
-            placeholder="Phone"
+            placeholder={t("Phone")}
             value={formData.phone}
             onChange={handleChange}
             className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -143,7 +142,7 @@ const RegisterLawyer: React.FC = () => {
           <input
             type="text"
             name="location"
-            placeholder="Location"
+            placeholder={t("Location")}
             value={formData.location}
             onChange={handleChange}
             className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -152,7 +151,7 @@ const RegisterLawyer: React.FC = () => {
           <input
             type="text"
             name="experience"
-            placeholder="Experience"
+            placeholder={t("Experience")}
             value={formData.experience}
             onChange={handleChange}
             className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -160,7 +159,7 @@ const RegisterLawyer: React.FC = () => {
           />
         </div>
         <div className="relative col-span-2 mt-4">
-          <label className="block text-gray-700 mb-2 font-medium">Practice Areas</label>
+          <label className="block text-gray-700 mb-2 font-medium">{t("practice_areas")}</label>
           <div className="border border-gray-300 rounded-lg p-3 bg-white focus:ring-2 focus:ring-yellow-500">
             {["State Council", "Civil", "Misdemeanor", "Criminal", "Family", "Economic"].map((area) => (
               <div key={area} className="flex items-center mb-2">
@@ -172,17 +171,18 @@ const RegisterLawyer: React.FC = () => {
                   className="mr-2 w-5 h-5 text-yellow-500 focus:ring-yellow-500"
                 />
                 <label htmlFor={area} className="text-gray-700">
-                  {area}
+                  {t(`practiceAreas.${area.toLowerCase()}`)}
                 </label>
               </div>
             ))}
           </div>
+
         </div>
         <div className="grid grid-cols-2 gap-4 mt-4">
           <input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder={t("Email")}
             value={formData.email}
             onChange={handleChange}
             className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -192,7 +192,7 @@ const RegisterLawyer: React.FC = () => {
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              placeholder="Create Password"
+              placeholder={t("Create Password")}
               value={formData.password}
               onChange={handleChange}
               className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -203,14 +203,15 @@ const RegisterLawyer: React.FC = () => {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
             >
-              {showPassword ? "Hide" : "Show"}
+              {showPassword ? t("Hide") : t("Show")}
             </button>
+
           </div>
           <div className="relative w-full">
             <input
               type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
-              placeholder="Confirm Password"
+              placeholder={t("Confirm Password")}
               value={formData.confirmPassword}
               onChange={handleChange}
               className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -218,17 +219,17 @@ const RegisterLawyer: React.FC = () => {
             />
             <button
               type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              onClick={() => setShowConfirmPassword(!showPassword)}
               className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
             >
-              {showConfirmPassword ? "Hide" : "Show"}
+              {showPassword ? t("Hide") : t("Show")}
             </button>
           </div>
         </div>
         <textarea
           className="border border-gray-300 rounded-lg p-2 w-full mt-4 focus:outline-none focus:ring-2 focus:ring-yellow-500"
           name="aboutMe"
-          placeholder="About"
+          placeholder={t("About")}
           value={formData.aboutMe}
           onChange={handleChange}
           required
@@ -243,17 +244,14 @@ const RegisterLawyer: React.FC = () => {
             className="mr-2 w-5 h-5 text-yellow-500 focus:ring-yellow-500"
           />
           <label htmlFor="agree" className="text-gray-700">
-            I agree to the{" "}
-            <Link to="/terms" className="text-yellow-500 underline">
-              terms and conditions
-            </Link>
+            {t("I agree to the terms and conditions.")}
           </label>
         </div>
         <button
           type="submit"
           className="block w-full bg-yellow-500 text-white py-3 rounded-lg hover:bg-yellow-600 transition text-center"
         >
-          {loading ? "Registering..." : "Register"}
+          {loading ? t("Registering...") : t("Register")}
         </button>
       </form>
       {error && (
@@ -261,31 +259,31 @@ const RegisterLawyer: React.FC = () => {
           <div className="bg-white p-6 rounded-lg shadow-lg">
             <p className="text-red-500 font-semibold">{error}</p>
             <button onClick={() => setError(null)} className="mt-4 bg-gray-500 text-white px-4 py-2 rounded-lg">
-              OK
+              {t("OK")}
             </button>
           </div>
         </div>
       )}
       {errorMessage && (
-  <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-    <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
-      <h2 className="text-xl font-bold mb-2 text-red-600">Registration Error</h2>
-      <p className="text-gray-700">{errorMessage}</p>
-      <button
-        onClick={() => setErrorMessage(null)}
-        className="mt-4 bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition"
-      >
-        OK
-      </button>
-    </div>
-  </div>
-)}
+        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+          <div className="bg-white p-6 rounded-lg shadow-lg w-96 text-center">
+            <h2 className="text-xl font-bold mb-2 text-red-600">Registration Error</h2>
+            <p className="text-gray-700">{errorMessage}</p>
+            <button
+              onClick={() => setErrorMessage(null)}
+              className="mt-4 bg-yellow-500 text-white py-2 px-4 rounded-lg hover:bg-yellow-600 transition"
+            >
+              {t("OK")}
+            </button>
+          </div>
+        </div>
+      )}
       {success && (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg">
-            <p className="text-green-500 font-semibold">Registration successful!</p>
+            <p className="text-green-500 font-semibold">{t("Registration Successful!")} </p>
             <button onClick={() => navigate("/login")} className="mt-4 bg-yellow-500 text-white px-4 py-2 rounded-lg">
-              OK
+              {t("OK")}
             </button>
           </div>
         </div>

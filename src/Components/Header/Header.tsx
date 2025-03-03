@@ -1,12 +1,18 @@
 import React, { useState } from "react";
 import { FaGavel } from "react-icons/fa";
 import { Link } from "react-router-dom";
-// import { LanguageProvider, useLanguage } from '../../Context/LanguageContext';
-
+import { useTranslation } from "react-i18next";
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
+  // استخدام useTranslation للحصول على الدالة t وكائن i18n
+  const { t, i18n } = useTranslation();
 
+  const changeLanguage = (lng: string) => {
+    i18n.changeLanguage(lng);
+    localStorage.setItem("language", lng); // حفظ اللغة الجديدة
+    window.location.reload(); // إعادة تحميل الصفحة لتحديث الترجمة
+  };
 
 
   return (
@@ -24,25 +30,25 @@ const Header: React.FC = () => {
             to="/"
             className="text-gray-800 hover:text-yellow-500 font-medium text-lg"
           >
-            Home
+            {t("Home")}
           </Link>
           <Link
-            to="/"
+            to="/dashboard"
             className="text-gray-800 hover:text-yellow-500 font-medium text-lg"
           >
-            Dashboard
+            {t("Dashboard")}
           </Link>
           <Link
-            to="/"
+            to="/search"
             className="text-gray-800 hover:text-yellow-500 font-medium text-lg"
           >
-            Search
+            {t("Search")}
           </Link>
           <Link
-            to="/"
+            to="/profile"
             className="text-gray-800 hover:text-yellow-500 font-medium text-lg"
           >
-            Profile
+            {t("Profile")}
           </Link>
 
           {/* Login Button */}
@@ -50,8 +56,21 @@ const Header: React.FC = () => {
             to="/login"
             className="bg-yellow-400 text-white font-semibold py-2 px-8 rounded-lg shadow-md hover:bg-yellow-500 transform hover:scale-105 transition-all"
           >
-            Login
+            {t("login")}
           </Link>
+
+          {/* زر تغيير اللغة */}
+          <div className="flex space-x-2">
+            <select
+              value={i18n.language} // تعيين اللغة الحالية كقيمة افتراضية
+              onChange={(e) => changeLanguage(e.target.value)}
+              className="p-2 border rounded"
+            >
+              <option value="en">English</option>
+              <option value="ar">العربية</option>
+            </select>
+          </div>
+
         </div>
 
         {/* Mobile Menu Button */}
@@ -70,7 +89,9 @@ const Header: React.FC = () => {
               strokeLinecap="round"
               strokeLinejoin="round"
               strokeWidth={2}
-              d={isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"}
+              d={
+                isOpen ? "M6 18L18 6M6 6l12 12" : "M4 6h16M4 12h16M4 18h16"
+              }
             />
           </svg>
         </button>
@@ -83,33 +104,45 @@ const Header: React.FC = () => {
             to="/"
             className="block text-gray-800 hover:text-yellow-500 text-lg"
           >
-            Home
+            {t("Home")}
           </Link>
           <Link
             to="/dashboard"
             className="block text-gray-800 hover:text-yellow-500 text-lg"
           >
-            Dashboard
+            {t("Dashboard")}
           </Link>
           <Link
             to="/search"
             className="block text-gray-800 hover:text-yellow-500 text-lg"
           >
-            Search
+            {t("Search")}
           </Link>
           <Link
             to="/profile"
             className="block text-gray-800 hover:text-yellow-500 text-lg"
           >
-            Profile
+            {t("profile")}
           </Link>
+          <div className="flex space-x-2">
+            <select
+              value={i18n.language} // تعيين اللغة الحالية كقيمة افتراضية
+              onChange={(e) => changeLanguage(e.target.value)}
+              className="p-2 border rounded"
+            >
+              <option value="en">English</option>
+              <option value="ar">العربية</option>
+            </select>
+          </div>
           <Link
             to="/login"
             className="block bg-yellow-500 hover:bg-yellow-600 text-white font-medium text-lg py-2 px-4 rounded text-center"
           >
-            Login
+            {t("login")}
           </Link>
+
         </div>
+
       )}
     </nav>
   );

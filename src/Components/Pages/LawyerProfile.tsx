@@ -1,12 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useNavigate } from "react-router-dom";
-import {
-  doc,
-  getDoc,
-  collection,
-  getDocs,
-} from "firebase/firestore";
+import { doc, getDoc, collection, getDocs } from "firebase/firestore";
 import { db } from "../../FireBase/firebaseLowyerRegister";
+import { useTranslation } from "react-i18next"; // استيراد الترجمة
 import {
   FaUserCircle,
   FaPhone,
@@ -38,6 +34,7 @@ interface Review {
 const LawyerProfile: React.FC = () => {
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
+  const { t } = useTranslation(); // استخدام الترجمة
   const [lawyer, setLawyer] = useState<Lawyer | null>(null);
   const [isFavorite, setIsFavorite] = useState<boolean>(false);
   const [reviews, setReviews] = useState<Review[]>([]);
@@ -69,11 +66,7 @@ const LawyerProfile: React.FC = () => {
         totalRating += data.rating;
       });
       setReviews(fetchedReviews);
-      if (fetchedReviews.length > 0) {
-        setAverageRating(totalRating / fetchedReviews.length);
-      } else {
-        setAverageRating(0);
-      }
+      setAverageRating(fetchedReviews.length > 0 ? totalRating / fetchedReviews.length : 0);
     };
 
     fetchLawyer();
@@ -90,118 +83,86 @@ const LawyerProfile: React.FC = () => {
   const toggleFavorite = () => {
     if (!id) return;
     const savedFavorites = JSON.parse(localStorage.getItem("favoriteLawyers") || "[]");
-    let updatedFavorites;
-
-    if (isFavorite) {
-      updatedFavorites = savedFavorites.filter((favId: string) => favId !== id);
-    } else {
-      updatedFavorites = [...savedFavorites, id];
-    }
+    const updatedFavorites = isFavorite
+      ? savedFavorites.filter((favId: string) => favId !== id)
+      : [...savedFavorites, id];
 
     localStorage.setItem("favoriteLawyers", JSON.stringify(updatedFavorites));
     setIsFavorite(!isFavorite);
   };
 
   const renderStars = (rating: number) => {
-    const stars = [];
-    for (let i = 1; i <= 5; i++) {
-      stars.push(
-        <FaStar
-          key={i}
-          className={`inline-block ${
-            i <= rating ? "text-yellow-500" : "text-gray-300"
-          }`}
-        />
-      );
-    }
-    return stars;
+    return Array.from({ length: 5 }, (_, i) => (
+      <FaStar key={i} className={`inline-block ${i < rating ? "text-yellow-500" : "text-gray-300"}`} />
+    ));
   };
 
   if (!lawyer) {
-    return <p className="text-center text-gray-500 mt-10">Loading lawyer profile...</p>;
+    return <p className="text-center text-gray-500 mt-10">{t("loading")}</p>;
   }
 
   return (
     <div className="pt-24 flex justify-center px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-2xl p-6 bg-white shadow-lg rounded-lg border border-yellow-500 relative">
         <FaHeart
-          className={`absolute top-4 right-4 text-3xl cursor-pointer ${
-            isFavorite ? "text-red-500" : "text-gray-400"
-          }`}
+          className={`absolute top-4 right-4 text-3xl cursor-pointer ${isFavorite ? "text-red-500" : "text-gray-400"}`}
           onClick={toggleFavorite}
         />
         <div className="flex justify-center">
           {lawyer.image ? (
-            <img
-              src={lawyer.image}
-              alt={lawyer.name}
-              className="w-32 h-32 rounded-full object-cover border-4 border-yellow-500"
-            />
+            <img src={lawyer.image} alt={lawyer.name} className="w-32 h-32 rounded-full object-cover border-4 border-yellow-500" />
           ) : (
             <FaUserCircle className="w-32 h-32 text-gray-400" />
           )}
         </div>
-        <h2 className="text-2xl font-bold text-center mt-4 text-yellow-600">
-          {lawyer.name}
-        </h2>
+        <h2 className="text-2xl font-bold text-center mt-4 text-yellow-600">{lawyer.name}</h2>
         <p className="text-center text-gray-500 flex justify-center items-center gap-2">
           <FaMapMarkerAlt className="text-yellow-500" />
-          {lawyer.location || "Location not specified"}
+          {lawyer.location ? (t(`${lawyer.location}`, lawyer.location) as string) : (t("locationNotSpecified") as string)}
         </p>
         <div className="mt-6 space-y-4 text-gray-700">
           <p className="flex items-center gap-2">
-            <FaPhone className="text-yellow-500" /> <strong>Phone:</strong>{" "}
-            {lawyer.phone || "Not provided"}
+            <FaPhone className="text-yellow-500" /> <strong>{t("phone")}:</strong> {lawyer.phone || t("notProvided")}
           </p>
           <p className="flex items-center gap-2">
-            <FaBriefcase className="text-yellow-500" /> <strong>Experience:</strong>{" "}
-            {lawyer.experience || "Not specified"}
+            <FaBriefcase className="text-yellow-500" /> <strong>{t("experience")}:</strong> {lawyer.experience || t("notSpecified")}
           </p>
           <p className="flex items-center gap-2">
-            <FaInfoCircle className="text-yellow-500" /> <strong>Practice Areas:</strong>{" "}
-            {lawyer.practiceAreas?.join(", ") || "Not specified"}
+            <FaInfoCircle className="text-yellow-500" />
+            <strong>{t("practice areas")}:</strong>
+            {lawyer.practiceAreas && lawyer.practiceAreas.length > 0
+              ? lawyer.practiceAreas
+                .map((area) => t(`practiceAreas.${area.toLowerCase().replace(" ", "")}`, area))
+                .join(" / ")
+              : t("notSpecified")}
           </p>
           <p className="flex items-center gap-2">
-            <FaInfoCircle className="text-yellow-500" /> <strong>Details:</strong>{" "}
-            {lawyer.details
-              ? lawyer.details
-              : "No additional details available at the moment."}
+            <FaInfoCircle className="text-yellow-500" /> <strong>{t("details")}:</strong> {lawyer.details || t("noAdditionalDetails")}
           </p>
         </div>
 
         <div className="mt-6 text-center">
-          <h3 className="text-xl font-semibold">Rating</h3>
-          <div className="flex justify-center mt-2">
-            {renderStars(Math.round(averageRating))}
-          </div>
+          <h3 className="text-xl font-semibold">{t("rating")}</h3>
           <p className="mt-2 text-gray-500">
-            Average Rating: {averageRating.toFixed(1)} ({reviews.length} reviews)
+            {t("average Rating")}: {averageRating.toFixed(1)} ({reviews.length} {t("reviews")})
           </p>
         </div>
 
         <div className="mt-8 flex justify-center">
-          <button
-            onClick={() => navigate("/chat")}
-            className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-full shadow-md transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-300 mr-4"
-          >
-            Chat
+          <button onClick={() => navigate("/chat")} className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-full">
+            {t("chat")}
           </button>
-          <button
-            onClick={() => navigate(`/lawyer/${id}/reviews`)}
-            className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-full shadow-md transform transition duration-300 ease-in-out hover:scale-105 focus:outline-none focus:ring-2 focus:ring-yellow-300"
-          >
-            Reviews
+          <button onClick={() => navigate(`/lawyer/${id}/reviews`)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-full ml-4">
+            {t("reviews")}
           </button>
         </div>
 
         {reviews.length > 0 && (
           <div className="mt-8">
-            <h3 className="text-xl font-semibold mb-4">User Reviews</h3>
+            <h3 className="text-xl font-semibold mb-4">{t("users Reviews")}</h3>
             {reviews.map((review) => (
               <div key={review.id} className="border border-gray-200 p-4 rounded mb-4">
-                <div className="flex items-center mb-2">
-                  {renderStars(review.rating)}
-                </div>
+                <div className="flex items-center mb-2">{renderStars(review.rating)}</div>
                 <p className="text-gray-700">{review.text}</p>
               </div>
             ))}

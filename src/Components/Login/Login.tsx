@@ -12,8 +12,10 @@ import {
 import { toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import { ToastContainer } from "react-toastify";
+import { useTranslation } from "react-i18next";
 
 const Login: React.FC = () => {
+  const { t } = useTranslation();
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [showPassword, setShowPassword] = useState(false);
@@ -26,27 +28,18 @@ const Login: React.FC = () => {
 
     try {
       await signInWithEmailAndPassword(auth, email, password);
-      toast.success("Login successful!", { position: "top-center", autoClose: 2000 });
+      toast.success(t("loginSuccess"), { position: "top-center", autoClose: 2000 });
       navigate("/HomePage");
     } catch (error: any) {
       console.error("Login Error:", error);
       const errorCode = error.code;
 
       if (errorCode === "auth/wrong-password") {
-        toast.error("Incorrect password. Please try again.", {
-          position: "top-center",
-          autoClose: 3000,
-        });
+        toast.error(t("wrongPassword"), { position: "top-center", autoClose: 3000 });
       } else if (errorCode === "auth/user-not-found") {
-        toast.error("No account found with this email. Please check or sign up.", {
-          position: "top-center",
-          autoClose: 3000,
-        });
+        toast.error(t("userNotFound"), { position: "top-center", autoClose: 3000 });
       } else {
-        toast.error("An unexpected error occurred. Please try again.", {
-          position: "top-center",
-          autoClose: 3000,
-        });
+        toast.error(t("unexpectedError"), { position: "top-center", autoClose: 3000 });
       }
     } finally {
       setLoading(false);
@@ -56,14 +49,11 @@ const Login: React.FC = () => {
   const handleSocialLogin = async (provider: any) => {
     try {
       await signInWithPopup(auth, provider);
-      toast.success("Login successful!", { position: "top-center", autoClose: 2000 });
+      toast.success(t("login Success"), { position: "top-center", autoClose: 2000 });
       navigate("/HomePage");
     } catch (error) {
       console.error("Social login error:", error);
-      toast.error("An error occurred. Please try again.", {
-        position: "top-center",
-        autoClose: 3000,
-      });
+      toast.error(t("unexpectedError"), { position: "top-center", autoClose: 3000 });
     }
   };
 
@@ -75,11 +65,11 @@ const Login: React.FC = () => {
     <div className="pt-24 pb-6 flex items-center justify-center min-h-screen bg-gray-50">
       <ToastContainer />
       <form onSubmit={handleLogin} className="bg-white p-6 rounded-lg shadow-lg w-full max-w-md">
-        <h1 className="text-2xl font-bold text-center mb-4 text-yellow-500">Login</h1>
+        <h1 className="text-2xl font-bold text-center mb-4 text-yellow-500">{t("login")}</h1>
 
         <input
           type="email"
-          placeholder="Email Address"
+          placeholder={t("email")}
           value={email}
           onChange={(e) => setEmail(e.target.value)}
           className="border border-gray-300 rounded px-4 py-2 mb-4 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400"
@@ -89,7 +79,7 @@ const Login: React.FC = () => {
         <div className="relative mb-6">
           <input
             type={showPassword ? "text" : "password"}
-            placeholder="Password"
+            placeholder={t("password")}
             value={password}
             onChange={(e) => setPassword(e.target.value)}
             className="border border-gray-300 rounded px-4 py-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-400"
@@ -100,7 +90,7 @@ const Login: React.FC = () => {
             onClick={() => setShowPassword(!showPassword)}
             className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
           >
-            {showPassword ? "Hide" : "Show"}
+            {showPassword ? t("hide") : t("show")}
           </button>
         </div>
 
@@ -109,35 +99,35 @@ const Login: React.FC = () => {
           className="block text-center w-full bg-yellow-400 text-white py-2 px-4 rounded hover:bg-yellow-500 focus:outline-none focus:ring-2 focus:ring-yellow-400"
           disabled={loading}
         >
-          {loading ? "Logging in..." : "Login"}
+          {loading ? t("logging...") : t("login")}
         </button>
 
         <div className="mt-6">
-          <p className="text-center text-gray-600 mb-4">Or sign in with</p>
+          <p className="text-center text-gray-600 mb-4">{t("or Sign In With")}</p>
           <div className="flex flex-col space-y-4">
             <button
               type="button"
               onClick={() => handleSocialLogin(googleProvider)}
-              className="flex items-center justify-center w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-400"
+              className="flex items-center justify-center w-full bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600"
             >
               <FaGoogle className="mr-2" />
-              Continue with Google
+              {t("continue with google")}
             </button>
             <button
               type="button"
               onClick={() => handleSocialLogin(facebookProvider)}
-              className="flex items-center justify-center w-full bg-blue-700 text-white py-2 px-4 rounded hover:bg-blue-800 focus:outline-none focus:ring-2 focus:ring-blue-600"
+              className="flex items-center justify-center w-full bg-blue-700 text-white py-2 px-4 rounded hover:bg-blue-800"
             >
               <FaFacebook className="mr-2" />
-              Continue with Facebook
+              {t("continue with facebook")}
             </button>
             <button
               type="button"
               onClick={() => handleSocialLogin(twitterProvider)}
-              className="flex items-center justify-center w-full bg-sky-400 text-white py-2 px-4 rounded hover:bg-sky-500 focus:outline-none focus:ring-2 focus:ring-sky-300"
+              className="flex items-center justify-center w-full bg-sky-400 text-white py-2 px-4 rounded hover:bg-sky-500"
             >
               <FaTwitter className="mr-2" />
-              Continue with Twitter
+              {t("continue with twitter")}
             </button>
           </div>
         </div>

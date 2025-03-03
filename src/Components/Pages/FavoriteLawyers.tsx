@@ -3,15 +3,17 @@ import { Link } from "react-router-dom";
 import { doc, getDoc } from "firebase/firestore";
 import { db } from "../../FireBase/firebaseLowyerRegister";
 import { FaUserCircle } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
 const FavoriteLawyers: React.FC = () => {
   const [favoriteLawyers, setFavoriteLawyers] = useState<any[]>([]);
+  const { t } = useTranslation();
 
   useEffect(() => {
     const fetchFavorites = async () => {
       const savedFavorites = JSON.parse(localStorage.getItem("favoriteLawyers") || "[]");
       const lawyersData = [];
-      
+
       for (const id of savedFavorites) {
         const docRef = doc(db, "Lawyers", id);
         const docSnap = await getDoc(docRef);
@@ -41,7 +43,11 @@ const FavoriteLawyers: React.FC = () => {
                 <FaUserCircle className="w-20 h-20 text-gray-400" />
               )}
               <h3 className="text-lg font-semibold mt-3 text-yellow-700">{lawyer.name}</h3>
-              <p className="text-gray-600 text-sm">{lawyer.location || "Location not specified"}</p>
+
+              <p className="text-gray-600 text-sm">
+                {lawyer.location ? (t(`${lawyer.location}`, lawyer.location) as string) : (t("locationNotSpecified") as string)}
+              </p>
+
             </Link>
           ))
         ) : (

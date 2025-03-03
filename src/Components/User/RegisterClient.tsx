@@ -1,17 +1,20 @@
 import React, { useState } from "react";
-import { Link, useNavigate } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import { auth } from "../../FireBase/firebaseLowyerRegister";
 import { createUserWithEmailAndPassword } from "firebase/auth";
 import toast from "react-hot-toast";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { getFirestore, doc, setDoc } from "firebase/firestore";
 import { FiUser, FiPlus } from "react-icons/fi";
+import { useTranslation } from "react-i18next";
 
 const storage = getStorage();
 const db = getFirestore();
 
+
 const RegisterClient: React.FC = () => {
   const navigate = useNavigate();
+  const { t } = useTranslation();
 
   const [formData, setFormData] = useState({
     name: "",
@@ -40,6 +43,7 @@ const RegisterClient: React.FC = () => {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
+      console.log("Image selected:", file.name);
       const reader = new FileReader();
       reader.onloadend = () => {
         setImage(reader.result as string);
@@ -52,12 +56,14 @@ const RegisterClient: React.FC = () => {
     e.preventDefault();
 
     if (!formData.agree) {
-      toast.error("You must agree to the terms and conditions.");
+      setPopupMessage(t("You must agree to the terms and conditions."));
+      setShowPopup(true);
       return;
     }
 
     if (formData.password !== formData.confirmPassword) {
-      toast.error("Passwords do not match.");
+      setPopupMessage(t("Passwords do not match."));
+      setShowPopup(true);
       return;
     }
 
@@ -87,18 +93,28 @@ const RegisterClient: React.FC = () => {
         imageUrl,
       });
 
-      setPopupMessage("Registration Successful!");
+      setPopupMessage(t("Registration Successful!"));
       setShowPopup(true);
-    } catch (error: any) {
-      toast.error(error.message);
-    } finally {
+    }
+    catch (error: any) {
+      console.error("Firebase error:", error);
+      if (error.code === "auth/email-already-in-use") {
+        setPopupMessage(t("This email is already in use. Redirecting to login"));
+        setShowPopup(true);
+        setTimeout(() => navigate("/login"), 3000);
+      } else {
+        toast.error(error.message);
+      }
+    }
+
+    finally {
       setLoading(false);
     }
   };
 
   return (
     <div className="mt-16 flex flex-col items-center justify-center min-h-screen bg-gray-100 p-4 relative">
-      <h1 className="text-4xl font-bold text-yellow-500 mb-6">Register Client</h1>
+      <h1 className="text-4xl font-bold text-yellow-500 mb-6">{t("Register")}</h1>
       <form onSubmit={handleSubmit} className="bg-white p-8 rounded-lg shadow-md w-full max-w-3xl">
         <div className="flex flex-col items-center mb-6 relative">
           <label className="cursor-pointer relative">
@@ -125,7 +141,7 @@ const RegisterClient: React.FC = () => {
           <input
             type="text"
             name="name"
-            placeholder="Name"
+            placeholder={t("Name")}
             value={formData.name}
             onChange={handleChange}
             className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -134,7 +150,7 @@ const RegisterClient: React.FC = () => {
           <input
             type="text"
             name="phone"
-            placeholder="Phone"
+            placeholder={t("Phone")}
             value={formData.phone}
             onChange={handleChange}
             className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -143,7 +159,7 @@ const RegisterClient: React.FC = () => {
           <input
             type="email"
             name="email"
-            placeholder="Email"
+            placeholder={t("Email")}
             value={formData.email}
             onChange={handleChange}
             className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -153,7 +169,7 @@ const RegisterClient: React.FC = () => {
             <input
               type={showPassword ? "text" : "password"}
               name="password"
-              placeholder="Create Password"
+              placeholder={t("Create Password")}
               value={formData.password}
               onChange={handleChange}
               className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -164,14 +180,14 @@ const RegisterClient: React.FC = () => {
               onClick={() => setShowPassword(!showPassword)}
               className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
             >
-              {showPassword ? "Hide" : "Show"}
+              {showPassword ? t("Hide") : t("Show")}
             </button>
           </div>
           <div className="relative">
             <input
               type={showConfirmPassword ? "text" : "password"}
               name="confirmPassword"
-              placeholder="Confirm Password"
+              placeholder={t("Confirm Password")}
               value={formData.confirmPassword}
               onChange={handleChange}
               className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
@@ -179,10 +195,10 @@ const RegisterClient: React.FC = () => {
             />
             <button
               type="button"
-              onClick={() => setShowConfirmPassword(!showConfirmPassword)}
+              onClick={() => setShowConfirmPassword(!showPassword)}
               className="absolute inset-y-0 right-0 flex items-center px-3 text-gray-500"
             >
-              {showConfirmPassword ? "Hide" : "Show"}
+              {showPassword ? t("Hide") : t("Show")}
             </button>
           </div>
         </div>
@@ -196,14 +212,14 @@ const RegisterClient: React.FC = () => {
             className="mr-2 w-5 h-5 text-yellow-500 focus:ring-yellow-500"
           />
           <label htmlFor="agree" className="text-gray-700">
-            I agree to the{" "}
-            <Link to="/terms" className="text-yellow-500 underline">
-              terms and conditions
-            </Link>
+            {t("I agree to the terms and conditions.")}
           </label>
         </div>
-        <button type="submit" className="block w-full bg-yellow-500 text-white py-3 rounded-lg hover:bg-yellow-600 transition text-center">
-          {loading ? "Registering..." : "Register"}
+        <button
+          type="submit"
+          className="block w-full bg-yellow-500 text-white py-3 rounded-lg hover:bg-yellow-600 transition text-center"
+        >
+          {loading ? t("Registering...") : t("Register")}
         </button>
       </form>
 
@@ -211,7 +227,7 @@ const RegisterClient: React.FC = () => {
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
           <div className="bg-white p-6 rounded-lg shadow-lg text-center">
             <h2 className="text-xl font-bold mb-4">{popupMessage}</h2>
-            <button onClick={() => navigate("/login")} className="bg-yellow-500 text-white px-4 py-2 rounded-lg">OK</button>
+            <button onClick={() => navigate("/login")} className="bg-yellow-500 text-white px-4 py-2 rounded-lg">{t("OK")} </button>
           </div>
         </div>
       )}

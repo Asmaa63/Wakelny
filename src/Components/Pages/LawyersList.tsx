@@ -3,6 +3,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { db } from "../../FireBase/firebaseLowyerRegister";
 import { FaUserCircle, FaHeart } from "react-icons/fa";
 import { useNavigate } from "react-router-dom";
+import { useTranslation } from "react-i18next";
 
 interface Lawyer {
   id: string;
@@ -19,46 +20,51 @@ interface LawyersListProps {
 }
 
 const LawyersList: React.FC<LawyersListProps> = ({ searchQuery, selectedGov, selectedCategories }) => {
+  const { t } = useTranslation();
   const [lawyers, setLawyers] = useState<Lawyer[]>([]);
-  const [favorites, setFavorites] = useState<string[]>([]); // قائمة المفضلين
+  const [favorites, setFavorites] = useState<string[]>([]);
   const navigate = useNavigate();
 
-  // تحميل المحامين من Firebase
+  const practiceAreaKeys: Record<string, string> = {
+  "state council": "stateCouncil",
+  "civil": "civil",
+  "misdemeanor": "misdemeanor",
+  "criminal": "criminal",
+  "family": "family",
+  "economic": "economic"
+};
+
   useEffect(() => {
     const fetchLawyers = async () => {
       const querySnapshot = await getDocs(collection(db, "Lawyers"));
       const lawyersData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
-        name: doc.data().name || "Unknown",
+        name: doc.data().name || t("Unknown"),
         image: doc.data().image || "",
         practiceAreas: Array.isArray(doc.data().practiceAreas) ? doc.data().practiceAreas : [],
-        location: doc.data().location || "Unknown location",
+        location: doc.data().location || t("Unknown location"),
       }));
       setLawyers(lawyersData);
     };
-
     fetchLawyers();
-  }, []);
+  }, [t]);
 
-  // تحميل قائمة المفضلين من localStorage عند تشغيل التطبيق
   useEffect(() => {
     const savedFavorites = JSON.parse(localStorage.getItem("favoriteLawyers") || "[]");
     setFavorites(savedFavorites);
   }, []);
 
-  // دالة لحفظ/إزالة المحامي من المفضلين
   const toggleFavorite = (lawyerId: string) => {
     let updatedFavorites;
     if (favorites.includes(lawyerId)) {
-      updatedFavorites = favorites.filter((id) => id !== lawyerId); // إزالة المحامي من المفضلين
+      updatedFavorites = favorites.filter((id) => id !== lawyerId);
     } else {
-      updatedFavorites = [...favorites, lawyerId]; // إضافة المحامي للمفضلين
+      updatedFavorites = [...favorites, lawyerId];
     }
     setFavorites(updatedFavorites);
-    localStorage.setItem("favoriteLawyers", JSON.stringify(updatedFavorites)); // تحديث localStorage
+    localStorage.setItem("favoriteLawyers", JSON.stringify(updatedFavorites));
   };
 
-  // تصفية المحامين حسب البحث والفلاتر
   const filteredLawyers = lawyers.filter(
     (lawyer) =>
       lawyer.name.toLowerCase().includes(searchQuery.toLowerCase()) &&
@@ -75,13 +81,12 @@ const LawyersList: React.FC<LawyersListProps> = ({ searchQuery, selectedGov, sel
               key={lawyer.id}
               className="relative bg-white shadow-lg rounded-lg p-4 text-center border border-yellow-500 cursor-pointer"
             >
-              {/* أيقونة القلب لإضافة للمفضلين */}
               <FaHeart
                 className={`absolute top-3 right-3 text-2xl cursor-pointer ${
                   favorites.includes(lawyer.id) ? "text-red-500" : "text-gray-400"
                 }`}
                 onClick={(e) => {
-                  e.stopPropagation(); // لمنع الانتقال إلى صفحة المحامي عند الضغط على القلب
+                  e.stopPropagation();
                   toggleFavorite(lawyer.id);
                 }}
               />
@@ -98,20 +103,24 @@ const LawyersList: React.FC<LawyersListProps> = ({ searchQuery, selectedGov, sel
                 )}
 
                 <h3 className="text-lg font-semibold mt-3">{lawyer.name}</h3>
-
                 <p className="text-sm text-yellow-600 font-medium mt-1">
-                  {Array.isArray(lawyer.practiceAreas) && lawyer.practiceAreas.length > 0
-                    ? lawyer.practiceAreas.join(" / ")
-                    : "Not specified"}
-                </p>
+  {Array.isArray(lawyer.practiceAreas) && lawyer.practiceAreas.length > 0
+    ? lawyer.practiceAreas
+        .map((area) => t(`practiceAreas.${practiceAreaKeys[area.toLowerCase()] || area.toLowerCase()}`))
+        .join(" / ")
+    : t("Not specified")}
+</p>
 
-                <p className="text-sm text-gray-500 mt-1">{lawyer.location}</p>
+                <p className="text-sm text-gray-500 mt-1">
+  {t(lawyer.location || "Unknown location")}
+</p>
+
               </div>
             </div>
           ))}
         </div>
       ) : (
-        <p className="text-center text-gray-500">No lawyers found matching your filters.</p>
+        <p className="text-center text-gray-500">{t("No lawyers found matching your filters.")}</p>
       )}
     </div>
   );

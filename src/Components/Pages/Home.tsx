@@ -2,15 +2,18 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 import legalImage from '../../assets/low.webp';
 import { motion } from 'framer-motion';
+import { useTranslation } from 'react-i18next';
 
 const Home: React.FC = () => {
+  const { t } = useTranslation();
+
   return (
     <div className="relative min-h-screen">
       {/* صورة الخلفية */}
       <div className="absolute inset-0">
         <img
           src={legalImage}
-          alt="Legal"
+          alt={t('Legal')}
           className="w-full h-full object-cover"
         />
       </div>
@@ -24,17 +27,17 @@ const Home: React.FC = () => {
           transition={{ duration: 0.8 }}
         >
           <h1 className="text-5xl font-extrabold text-black">
-            Streamline Your Legal Process
+            {t('Streamline Your Legal Process')}
           </h1>
           <p className="text-lg text-black">
-            Find the perfect lawyer who can handle your needs with expertise and trust.
+            {t('Find the perfect lawyer who can handle your needs with expertise and trust.')}
           </p>
           <motion.div whileHover={{ scale: 1.05 }}>
             <Link
               to="/getstart"
               className="bg-yellow-400 text-white font-semibold py-3 px-6 rounded-lg shadow-md hover:bg-yellow-500 transform hover:scale-105 transition-all inline-block"
             >
-              Get Started
+              {t('Get Started')}
             </Link>
           </motion.div>
         </motion.div>

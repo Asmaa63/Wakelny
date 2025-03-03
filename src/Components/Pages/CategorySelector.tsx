@@ -1,22 +1,21 @@
 import React, { useState } from "react";
 import { FaBalanceScale, FaBuilding, FaGavel, FaUserShield, FaUsers, FaChartBar } from "react-icons/fa";
+import { useTranslation } from "react-i18next";
 
-const categories = [
-  { id: "State Council", name: "مجلس دولة / State Council", icon: <FaBalanceScale /> },
-  { id: "Civil", name: "مدني / Civil", icon: <FaBuilding /> },
-  { id: "Misdemeanors", name: "جنح / Misdemeanors", icon: <FaGavel /> },
-  { id: "Criminal", name: "جنائي / Criminal", icon: <FaUserShield /> },
-  { id: "Family", name: "أسرة / Family", icon: <FaUsers /> },
-  { id: "Economic", name: "اقتصادية / Economic", icon: <FaChartBar /> },
-];
-
-interface CategorySelectorProps {
-  setSelectedCategories: (categories: string[]) => void;
-}
-
-const CategorySelector: React.FC<CategorySelectorProps> = ({ setSelectedCategories }) => {
+const CategorySelector: React.FC<{ setSelectedCategories: (categories: string[]) => void }> = ({ setSelectedCategories }) => {
+  const { t } = useTranslation();
   const [selectedCategories, setLocalCategories] = useState<string[]>([]);
 
+  const categories = [
+  { id: "stateCouncil", name: t("practiceAreas.stateCouncil"), icon: <FaBalanceScale /> },
+  { id: "civil", name: t("practiceAreas.civil"), icon: <FaBuilding /> },
+  { id: "misdemeanor", name: t("practiceAreas.misdemeanor"), icon: <FaGavel /> },
+  { id: "criminal", name: t("practiceAreas.criminal"), icon: <FaUserShield /> },
+  { id: "family", name: t("practiceAreas.family"), icon: <FaUsers /> },
+  { id: "economic", name: t("practiceAreas.economic"), icon: <FaChartBar /> },
+];
+
+  
   const toggleSelection = (id: string) => {
     const updatedCategories = selectedCategories.includes(id)
       ? selectedCategories.filter((cat) => cat !== id)

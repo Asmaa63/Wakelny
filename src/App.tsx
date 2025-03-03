@@ -7,7 +7,6 @@ import UserOptionGetStart from "./Components/Pages/UserOptionGetStart";
 import RegisterClient from "./Components/User/RegisterClient";
 import ConfirmDetailsClient from "./Components/User/ConfirmDetailsClient";
 import RegisterLawyer from "./Components/Lawyers/RegisterLowyer";
-import ConfirmDetailsLawyer from "./Components/Lawyers/ConfirmDetailsLawyer";
 import { useEffect } from 'react';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from './FireBase/firebaseLowyerRegister';
@@ -20,7 +19,7 @@ import FavoriteLawyers from "./Components/Pages/FavoriteLawyers";
 import ReviewsPage from "./Components/Pages/ReviewsPage";
 
 const App: React.FC = () => {
-  
+
   useEffect(() => {
     // متابعة حالة المستخدم عند فتح التطبيق
     onAuthStateChanged(auth, (user) => {
@@ -45,7 +44,7 @@ const App: React.FC = () => {
           path="/"
           element={
             <>
-              <Header/>
+              <Header />
               <Home />
               <UserOptions />
             </>
@@ -54,10 +53,10 @@ const App: React.FC = () => {
 
         {/* User Get Started */}
         <Route path="/getstart" element={
-        <>
-          <Header/>
-          <UserOptionGetStart />
-        </>
+          <>
+            <Header />
+            <UserOptionGetStart />
+          </>
         } />
 
         {/* Client Registration Steps */}
@@ -65,67 +64,61 @@ const App: React.FC = () => {
           path="/ClientStep1"
           element={
             <>
-            <Header/>
-             <RegisterClient/> 
-             </>
-            }
+              <Header />
+              <RegisterClient />
+            </>
+          }
         />
         <Route
           path="/clientstep2"
           element={
             <>
-            <Header/>
-          <ConfirmDetailsClient/>
-          </>
-         }
+              <Header />
+              <ConfirmDetailsClient />
+            </>
+          }
         />
 
         {/* Lawyer Registration Steps */}
-         <Route
+        <Route
           path="/lowyerStep1"
           element={
             <>
-            <Header/>
-          <RegisterLawyer/> 
-          </>
-        }
+              <Header />
+              <RegisterLawyer />
+            </>
+          }
         />
-        <Route path="/lowyerstep2" element={
-          <>
-            <Header/>
-        <ConfirmDetailsLawyer/> 
-        </>
-        } />
 
         <Route path="/login" element={
           <>
-            <Header/>
-        <Login />
-        </>
+            <Header />
+            <Login />
+          </>
         } />
-        <Route path="/HomePage" element={<HomePage/> } />
+        <Route path="/HomePage" element={<HomePage />} />
         <Route path="/FavoriteLowyer" element={<>
-        <HeaderWithLogin/>
-        <FavoriteLawyers/>
-        </> } />
+          <HeaderWithLogin />
+          <FavoriteLawyers />
+        </>} />
         <Route path="/profile" element={<>
-        <HeaderWithLogin/>
-        <UserProfile/>
-        </> } />
-        
+          <HeaderWithLogin />
+          <UserProfile />
+        </>} />
+
         <Route path="/lawyer/:id" element={
           <>
-          <HeaderWithLogin/>
-          <LawyerProfile />
+            <HeaderWithLogin />
+            <LawyerProfile />
           </>
         } />
         <Route path="/lawyer/:id/reviews" element={
           <>
-          <HeaderWithLogin/>
-          <ReviewsPage/>
+            <HeaderWithLogin />
+            <ReviewsPage />
           </>
-         } />
-        
+        } />
+
       </Routes>
 
     </Router>
