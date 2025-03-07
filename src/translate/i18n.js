@@ -12,7 +12,7 @@ const resources = {
 const savedLang = localStorage.getItem("lang") || "en";
 i18n.use(initReactI18next).init({
   resources,
-  lng: savedLang, // استخدام اللغة المحفوظة
+  lng: savedLang, 
   fallbackLng: "en",
   interpolation: {
     escapeValue: false
@@ -21,7 +21,7 @@ i18n.use(initReactI18next).init({
 
 i18n.use(initReactI18next).init({
   resources,
-  lng: localStorage.getItem("language") || "en", // استرجاع اللغة المحفوظة أو الافتراضية
+  lng: localStorage.getItem("language") || "en", 
   fallbackLng: "en",
   interpolation: { escapeValue: false }
 });

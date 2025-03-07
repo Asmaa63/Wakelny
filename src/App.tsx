@@ -21,7 +21,6 @@ import ReviewsPage from "./Components/Pages/ReviewsPage";
 const App: React.FC = () => {
 
   useEffect(() => {
-    // متابعة حالة المستخدم عند فتح التطبيق
     onAuthStateChanged(auth, (user) => {
       if (user) {
         console.log("User is logged in:", user);

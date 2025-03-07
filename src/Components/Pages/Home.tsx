@@ -9,7 +9,6 @@ const Home: React.FC = () => {
 
   return (
     <div className="relative min-h-screen">
-      {/* صورة الخلفية */}
       <div className="absolute inset-0">
         <img
           src={legalImage}
@@ -18,7 +17,6 @@ const Home: React.FC = () => {
         />
       </div>
 
-      {/* النصوص */}
       <div className="absolute inset-0 flex items-center justify-center">
         <motion.div
           className="bg-white bg-opacity-70 shadow-xl rounded-lg p-8 text-center space-y-6"

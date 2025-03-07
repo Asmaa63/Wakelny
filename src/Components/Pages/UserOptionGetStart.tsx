@@ -1,9 +1,9 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { useTranslation } from "react-i18next"; // استيراد الترجمة
+import { useTranslation } from "react-i18next"; 
 
 const UserOptionGetStart: React.FC = () => {
-  const { t } = useTranslation(); // استخدام الترجمة
+  const { t } = useTranslation(); 
 
   return (
     <div className="bg-white py-32">

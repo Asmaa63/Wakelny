@@ -1,50 +1,83 @@
-# React + TypeScript + Vite
+# 👨‍⚖️ Wakelny - Lawyer & Client Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+Wakelny is a web application designed to connect lawyers with clients. It allows users to register as lawyers or clients, browse profiles, and manage their accounts easily.
 
-Currently, two official plugins are available:
+## 🚀 Features
+- 🔐 User authentication with Firebase.
+- 🏠 Home page displaying user options.
+- 📝 Multi-step registration for clients and lawyers.
+- ⭐ Add lawyers to favorites.
+- ✍️ Reviews and ratings for lawyers.
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react/README.md) uses [Babel](https://babeljs.io/) for Fast Refresh
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react-swc) uses [SWC](https://swc.rs/) for Fast Refresh
+---
 
-## Expanding the ESLint configuration
+## 🛠️ Technologies Used
+- **React** + **Vite** 🚀 (for fast performance)
+- **TypeScript** 📌 (for better code quality)
+- **React Router DOM** 🏤️ (for navigation)
+- **Firebase Authentication** 🔐 (for secure login)
+- **React Toastify** 🔔 (for user notifications)
+- **Tailwind CSS** 🎨 (for modern and responsive UI)
 
-If you are developing a production application, we recommend updating the configuration to enable type aware lint rules:
+---
 
-- Configure the top-level `parserOptions` property like this:
+## 📺 Installation
 
-```js
-export default tseslint.config({
-  languageOptions: {
-    // other options...
-    parserOptions: {
-      project: ['./tsconfig.node.json', './tsconfig.app.json'],
-      tsconfigRootDir: import.meta.dirname,
-    },
-  },
-})
+### 1️⃣ Clone the repository:
+```sh
+git clone https://github.com/Asmaa63/Wakelny.git
+cd Wakelny
 ```
 
-- Replace `tseslint.configs.recommended` to `tseslint.configs.recommendedTypeChecked` or `tseslint.configs.strictTypeChecked`
-- Optionally add `...tseslint.configs.stylisticTypeChecked`
-- Install [eslint-plugin-react](https://github.com/jsx-eslint/eslint-plugin-react) and update the config:
-
-```js
-// eslint.config.js
-import react from 'eslint-plugin-react'
-
-export default tseslint.config({
-  // Set the react version
-  settings: { react: { version: '18.3' } },
-  plugins: {
-    // Add the react plugin
-    react,
-  },
-  rules: {
-    // other rules...
-    // Enable its recommended rules
-    ...react.configs.recommended.rules,
-    ...react.configs['jsx-runtime'].rules,
-  },
-})
+### 2️⃣ Install dependencies:
+```sh
+npm install
 ```
+
+### 3️⃣ Run the project:
+```sh
+npm run dev
+```
+
+💡 **Note**: If you prefer **Yarn** or **pnpm**, use:
+```sh
+yarn install && yarn dev
+# or
+pnpm install && pnpm dev
+```
+
+---
+
+## 📌 Project Structure
+
+```
+src/
+│── Components/
+│   ├── Header/              # Header components
+│   ├── Pages/               # Main pages
+│   ├── User/                # Client registration
+│   ├── Lawyers/             # Lawyer registration
+│── FireBase/                # Firebase configuration
+│── App.tsx                  # Main application entry
+```
+
+---
+
+## 🛠️ Firebase Setup
+1. Go to [Firebase Console](https://console.firebase.google.com/).
+2. Create a new project and add a **Web App**.
+3. Copy the configuration details (`apiKey`, `authDomain`, ...).
+4. Create a **`.env`** file in the root directory and add the following:
+
+```env
+VITE_FIREBASE_API_KEY=your_api_key
+VITE_FIREBASE_AUTH_DOMAIN=your_auth_domain
+VITE_FIREBASE_PROJECT_ID=your_project_id
+```
+
+---
+
+## 🤝 Contributing
+Contributions are welcome! You can:
+- Open an **Issue** for any problems.
+- Submit a **Pull Request** with improvements.

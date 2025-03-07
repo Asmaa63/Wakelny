@@ -122,23 +122,28 @@ const LawyerProfile: React.FC = () => {
         </p>
         <div className="mt-6 space-y-4 text-gray-700">
           <p className="flex items-center gap-2">
-            <FaPhone className="text-yellow-500" /> <strong>{t("phone")}:</strong> {lawyer.phone || t("notProvided")}
+            <FaPhone className="text-yellow-500" /> <strong>{t("Phone")}:</strong> {lawyer.phone || t("notProvided")}
           </p>
           <p className="flex items-center gap-2">
-            <FaBriefcase className="text-yellow-500" /> <strong>{t("experience")}:</strong> {lawyer.experience || t("notSpecified")}
+            <FaBriefcase className="text-yellow-500" /> <strong>{t("Experience")}:</strong> {lawyer.experience || t("notSpecified")}
           </p>
           <p className="flex items-center gap-2">
             <FaInfoCircle className="text-yellow-500" />
-            <strong>{t("practice areas")}:</strong>
+            <strong>{t("practice_areas")}:</strong>
             {lawyer.practiceAreas && lawyer.practiceAreas.length > 0
               ? lawyer.practiceAreas
                 .map((area) => t(`practiceAreas.${area.toLowerCase().replace(" ", "")}`, area))
                 .join(" / ")
               : t("notSpecified")}
           </p>
-          <p className="flex items-center gap-2">
-            <FaInfoCircle className="text-yellow-500" /> <strong>{t("details")}:</strong> {lawyer.details || t("noAdditionalDetails")}
+          <p className="flex items-start gap-2 flex-wrap">
+            <FaInfoCircle className="text-yellow-500 flex-shrink-0" />
+            <span className="font-bold flex-shrink-0">{t("details")}:</span>
+            <span className="break-words whitespace-normal min-w-0">
+              {lawyer.details || t("noAdditionalDetails")}
+            </span>
           </p>
+
         </div>
 
         <div className="mt-6 text-center">

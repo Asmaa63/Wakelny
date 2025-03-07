@@ -4,10 +4,10 @@ import { collection, addDoc } from "firebase/firestore";
 import { db } from "../../FireBase/firebaseLowyerRegister";
 import { FaStar } from "react-icons/fa";
 import toast from "react-hot-toast";
-import { useTranslation } from "react-i18next"; // استيراد الترجمة
+import { useTranslation } from "react-i18next"; 
 
 const ReviewsPage: React.FC = () => {
-  const { t } = useTranslation(); // استخدام الترجمة
+  const { t } = useTranslation(); 
   const { id } = useParams<{ id: string }>();
   const navigate = useNavigate();
   const [rating, setRating] = useState<number>(0);
@@ -18,7 +18,7 @@ const ReviewsPage: React.FC = () => {
     e.preventDefault();
     if (!id) return;
     if (rating === 0) {
-      toast.error(t("selectRating")); // ترجمة رسالة الخطأ
+      toast.error(t("selectRating")); 
       return;
     }
     try {
@@ -28,10 +28,10 @@ const ReviewsPage: React.FC = () => {
         text: reviewText,
         createdAt: new Date().toISOString(),
       });
-      toast.success(t("submitted")); // ترجمة نجاح الإرسال
+      toast.success(t("submitted")); 
       navigate(`/lawyer/${id}`);
     } catch (error: any) {
-      toast.error(t("error")); // ترجمة رسالة الخطأ
+      toast.error(t("error")); 
     }
   };
 
@@ -39,7 +39,7 @@ const ReviewsPage: React.FC = () => {
     <div className="pt-24 flex justify-center px-4 sm:px-6 lg:px-8">
       <div className="w-full max-w-2xl p-6 bg-white shadow-lg rounded-lg border border-yellow-500">
         <h2 className="text-2xl font-bold text-center mb-6">
-          {t("title")} {/* ترجمة العنوان */}
+          {t("title")} 
         </h2>
         <form onSubmit={handleSubmit}>
           <div className="flex justify-center mb-4">
@@ -58,7 +58,7 @@ const ReviewsPage: React.FC = () => {
             <textarea
               className="border border-gray-300 rounded-lg p-2 w-full focus:outline-none focus:ring-2 focus:ring-yellow-500"
               rows={4}
-              placeholder={t("placeholder")} // ترجمة النص الافتراضي
+              placeholder={t("placeholder")} 
               value={reviewText}
               onChange={(e) => setReviewText(e.target.value)}
               required
@@ -68,7 +68,7 @@ const ReviewsPage: React.FC = () => {
             type="submit"
             className="block w-full bg-yellow-500 text-white py-3 rounded-lg hover:bg-yellow-600 transition text-center"
           >
-            {t("submit")} {/* ترجمة زر الإرسال */}
+            {t("submit")} 
           </button>
         </form>
       </div>

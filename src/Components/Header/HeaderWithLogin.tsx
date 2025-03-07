@@ -12,7 +12,7 @@ const HeaderWithLogin: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [setUser] = useState<any>(null);
   const [language, setLanguage] = useState(localStorage.getItem("language") || "en");
-  const [_, forceUpdate] = useState(false); // تحديث إجباري عند تغيير اللغة
+  const [_, forceUpdate] = useState(false);
   const navigate = useNavigate();
   const { t, i18n } = useTranslation();
 
@@ -24,7 +24,7 @@ const HeaderWithLogin: React.FC = () => {
     setLanguage(lng);
     localStorage.setItem("language", lng);
     i18n.changeLanguage(lng).then(() => {
-      forceUpdate((prev) => !prev); // يجبر إعادة التحديث بعد تغيير اللغة
+      forceUpdate((prev) => !prev); 
     });
   };
 

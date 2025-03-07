@@ -5,13 +5,12 @@ import { useTranslation } from "react-i18next";
 
 const Header: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
-  // استخدام useTranslation للحصول على الدالة t وكائن i18n
   const { t, i18n } = useTranslation();
 
   const changeLanguage = (lng: string) => {
     i18n.changeLanguage(lng);
-    localStorage.setItem("language", lng); // حفظ اللغة الجديدة
-    window.location.reload(); // إعادة تحميل الصفحة لتحديث الترجمة
+    localStorage.setItem("language", lng); 
+    window.location.reload(); 
   };
 
 
@@ -59,7 +58,6 @@ const Header: React.FC = () => {
             {t("login")}
           </Link>
 
-          {/* زر تغيير اللغة */}
           <div className="flex space-x-2">
             <select
               value={i18n.language} // تعيين اللغة الحالية كقيمة افتراضية
@@ -122,7 +120,7 @@ const Header: React.FC = () => {
             to="/profile"
             className="block text-gray-800 hover:text-yellow-500 text-lg"
           >
-            {t("profile")}
+            {t("Profile")}
           </Link>
           <div className="flex space-x-2">
             <select
