@@ -27,7 +27,12 @@ const Login: React.FC = () => {
     setLoading(true);
 
     try {
-      await signInWithEmailAndPassword(auth, email, password);
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
+
+      // هنا بعد تسجيل الدخول بنجاح، خدي userId وخزنيه في localStorage
+      const userId = userCredential.user.uid;
+      localStorage.setItem("userId", userId);
+
       toast.success(t("loginSuccess"), { position: "top-center", autoClose: 2000 });
       navigate("/HomePage");
     } catch (error: any) {
@@ -46,10 +51,15 @@ const Login: React.FC = () => {
     }
   };
 
+
   const handleSocialLogin = async (provider: any) => {
     try {
-      await signInWithPopup(auth, provider);
-      toast.success(t("login Success"), { position: "top-center", autoClose: 2000 });
+      const result = await signInWithPopup(auth, provider);
+
+      const userId = result.user.uid;
+      localStorage.setItem("userId", userId);
+
+      toast.success(t("loginSuccess"), { position: "top-center", autoClose: 2000 });
       navigate("/HomePage");
     } catch (error) {
       console.error("Social login error:", error);

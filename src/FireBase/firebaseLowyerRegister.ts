@@ -1,3 +1,5 @@
+// src/FireBase/firebaseLowyerRegister.ts
+
 import { initializeApp } from "firebase/app";
 import { getAuth, setPersistence, browserLocalPersistence } from "firebase/auth";
 import { getFirestore } from "firebase/firestore";
@@ -18,12 +20,9 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const storage = getStorage(app);
 
+// إعداد الـ local persistence (اختياري)
 setPersistence(auth, browserLocalPersistence)
-  .then(() => {
-    console.log("Persistence set to local");
-  })
-  .catch((error) => {
-    console.error("Error setting persistence:", error);
-  });
+  .then(() => console.log("Persistence set to local"))
+  .catch((error) => console.error("Persistence error:", error));
 
 export { app, auth, db, storage };

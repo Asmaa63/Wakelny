@@ -154,12 +154,17 @@ const LawyerProfile: React.FC = () => {
         </div>
 
         <div className="mt-8 flex justify-center">
-          <button onClick={() => navigate("/chat")} className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-full">
+          <button onClick={() => navigate(`/chat/${id}`)}
+          className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-full"
+          >
             {t("chat")}
           </button>
+
           <button onClick={() => navigate(`/lawyer/${id}/reviews`)} className="bg-yellow-500 hover:bg-yellow-600 text-white font-bold py-2 px-6 rounded-full ml-4">
             {t("reviews")}
           </button>
+    
+
         </div>
 
         {reviews.length > 0 && (

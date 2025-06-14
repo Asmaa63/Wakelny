@@ -4,6 +4,7 @@ import { auth, db } from "../../FireBase/firebaseLowyerRegister";
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { getStorage, ref, uploadBytes, getDownloadURL } from "firebase/storage";
 import { FaEdit, FaSave, FaCamera, FaUser } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 const UserProfile: React.FC = () => {
   const { t } = useTranslation();
@@ -12,6 +13,8 @@ const UserProfile: React.FC = () => {
   const [isEditing, setIsEditing] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [userType, setUserType] = useState<string | null>(null);
+
+  const navigate = useNavigate();
 
   const practiceAreaKeys: Record<string, string> = {
     "state council": "stateCouncil",
@@ -136,7 +139,15 @@ const UserProfile: React.FC = () => {
                 user.practiceAreas.map((area: string) => t(`practiceAreas.${practiceAreaKeys[area.toLowerCase()] || area}`, area)).join(", ")
 
               )}
+              <button
+                onClick={() => navigate("/chats")}
+                className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg flex items-center mx-auto hover:bg-blue-600 transition"
+              >
+                💬 {t("viewChats") || "View Chats"}
+              </button>
+
             </p>
+            
           )}
         </div>
         <button className="mt-6 px-6 py-2 bg-yellow-500 text-white rounded-lg flex items-center mx-auto hover:bg-yellow-600 transition" onClick={isEditing ? handleSave : handleEdit}>

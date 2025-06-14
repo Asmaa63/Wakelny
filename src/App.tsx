@@ -17,6 +17,8 @@ import { ToastContainer } from "react-toastify";
 import LawyerProfile from "./Components/Pages/LawyerProfile"
 import FavoriteLawyers from "./Components/Pages/FavoriteLawyers";
 import ReviewsPage from "./Components/Pages/ReviewsPage";
+import ChatRoom from "./Components/Pages/ChatRoom";
+import ChatsList from "./Components/Pages/ChatsList";
 
 const App: React.FC = () => {
 
@@ -117,6 +119,9 @@ const App: React.FC = () => {
             <ReviewsPage />
           </>
         } />
+        <Route path="/chat/:lawyerId" element={<ChatRoom />} />
+        <Route path="/chats" element={<ChatsList/>} />
+        <Route path="/chat/:chatId" element={<ChatRoom />} />
 
       </Routes>
 
