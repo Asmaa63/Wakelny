@@ -1,16 +1,16 @@
 {
   "login": "Login",
-  "email": "Email Address",
+  "email": "Email",
   "password": "Password",
   "sign_in": "Sign in with",
   "continue_google": "Continue with Google",
   "continue_facebook": "Continue with Facebook",
   "continue_twitter": "Continue with Twitter",
   "error_message": "An unexpected error occurred. Please try again.",
-  
+
   "register": "Register",
   "name": "Name",
-  "phone": "Phone",
+  "Phone": "Phone",
   "location": "Location",
   "experience": "Experience",
   "practice_areas": "Practice Areas",
@@ -44,6 +44,7 @@
   "select_governorate": "Select Governorate",
   "did_not_find": "Didn't find what you're looking for?",
   "ai_assistance": "Get AI Assistance",
+
   "state_council": "State Council",
   "civil": "Civil",
   "criminal": "Criminal",
@@ -57,14 +58,14 @@
 
   "details": "Details",
   "edit": "Edit",
+  "save": "Save",
+  "viewChats": "View Chats",
+
   "ai_assistance_message": "Didn't find what you're looking for? Describe your issue and let AI help you.",
   "get_ai_assistance": "Get AI Assistance",
+
   "Legal": "Legal",
-  "Streamline Your Legal Process": "Streamline Your Legal Process",
-  "Find the perfect lawyer who can handle your needs with expertise and trust.": "Find the perfect lawyer who can handle your needs with expertise and trust.",
-  "Get Started": "Get Started",
-  "What are you looking for?": "What are you looking for?",
-  "Select Governorate": "Select Governorate",
+
   "All": "All",
   "Cairo": "Cairo",
   "Giza": "Giza",
@@ -102,26 +103,25 @@
   "submit": "Submit",
 
   "clientsTitle": "For Clients",
-    "clientsDescription": "Join us to find the best legal services tailored to your needs.",
-    "lawyersTitle": "For Lawyers",
-    "lawyersDescription": "Become a part of our network and connect with potential clients.",
-    "signUpIn": "Sign Up / In",
+  "clientsDescription": "Join us to find the best legal services tailored to your needs.",
+  "lawyersTitle": "For Lawyers",
+  "lawyersDescription": "Become a part of our network and connect with potential clients.",
+  "signUpIn": "Sign Up / In",
 
-    "loading": "Loading...",
-  "noUserData": "No user data available.",
-  "save": "Save",
+  "loading": "Loading...",
+  "noUserData": "No user data found.",
+
   "alt": {
-    "profileImage": "User profile image"
+    "profileImage": "Profile Image"
   },
+
   "practiceAreas": {
+    "title": "Practice Areas",
     "stateCouncil": "State Council",
     "civil": "Civil",
     "misdemeanor": "Misdemeanor",
     "criminal": "Criminal",
     "family": "Family",
-    "economic": "Economic",
-    "title": "Practice Areas",
-    "state council":"State Council"
+    "economic": "Economic"
   }
-
 }

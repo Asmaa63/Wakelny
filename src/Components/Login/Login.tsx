@@ -2,6 +2,9 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaGoogle, FaFacebook, FaTwitter } from "react-icons/fa";
 import { auth } from "../../FireBase/firebaseLowyerRegister";
+import { doc, getDoc } from "firebase/firestore";
+import { db } from "../../FireBase/firebaseLowyerRegister";
+
 import {
   signInWithEmailAndPassword,
   signInWithPopup,
@@ -28,23 +31,65 @@ const Login: React.FC = () => {
 
     try {
       const userCredential = await signInWithEmailAndPassword(auth, email, password);
+      const user = userCredential.user;
+      const uid = user.uid;
 
-      // هنا بعد تسجيل الدخول بنجاح، خدي userId وخزنيه في localStorage
-      const userId = userCredential.user.uid;
-      localStorage.setItem("userId", userId);
+      console.log("✅ Login successful with UID:", uid);
 
-      toast.success(t("loginSuccess"), { position: "top-center", autoClose: 2000 });
-      navigate("/HomePage");
+      // Check clients
+      const clientRef = doc(db, "clients", uid);
+      const clientSnap = await getDoc(clientRef);
+
+      if (clientSnap.exists()) {
+        const clientData = clientSnap.data();
+        console.log("👤 Found in clients:", clientData);
+
+        localStorage.setItem("user", JSON.stringify({
+          uid,
+          email: clientData.email,
+          name: clientData.name,
+          role: "client",
+        }));
+
+        toast.success(t("loginSuccess"));
+        navigate("/HomePage");
+        return;
+      }
+
+      // Check lawyers
+      const lawyerRef = doc(db, "lawyers", uid);
+      const lawyerSnap = await getDoc(lawyerRef);
+
+      if (lawyerSnap.exists()) {
+        const lawyerData = lawyerSnap.data();
+        console.log("👨‍⚖️ Found in lawyers:", lawyerData);
+
+        localStorage.setItem("user", JSON.stringify({
+          uid,
+          email: lawyerData.email,
+          name: lawyerData.name,
+          role: "lawyer",
+        }));
+
+        toast.success(t("loginSuccess"));
+        navigate("/HomePage");
+        return;
+      }
+
+      // Not found in either
+      toast.error("User data not found in Firestore");
+      console.log("❌ UID not found in clients or lawyers");
+
     } catch (error: any) {
       console.error("Login Error:", error);
       const errorCode = error.code;
 
       if (errorCode === "auth/wrong-password") {
-        toast.error(t("wrongPassword"), { position: "top-center", autoClose: 3000 });
+        toast.error(t("wrongPassword"));
       } else if (errorCode === "auth/user-not-found") {
-        toast.error(t("userNotFound"), { position: "top-center", autoClose: 3000 });
+        toast.error(t("userNotFound"));
       } else {
-        toast.error(t("unexpectedError"), { position: "top-center", autoClose: 3000 });
+        toast.error(t("unexpectedError"));
       }
     } finally {
       setLoading(false);

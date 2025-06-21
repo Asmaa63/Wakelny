@@ -19,6 +19,9 @@ import FavoriteLawyers from "./Components/Pages/FavoriteLawyers";
 import ReviewsPage from "./Components/Pages/ReviewsPage";
 import ChatRoom from "./Components/Pages/ChatRoom";
 import ChatsList from "./Components/Pages/ChatsList";
+import ClientChatAI from "./Components/Chat/ClientChatAI";
+import LawyerChatAI from "./Components/Chat/LawyerChatAI";
+import ChatRedirector from "./Components/Chat/ChatRedirector";
 
 const App: React.FC = () => {
 
@@ -122,6 +125,13 @@ const App: React.FC = () => {
         <Route path="/chat/:lawyerId" element={<ChatRoom />} />
         <Route path="/chats" element={<ChatsList/>} />
         <Route path="/chat/:chatId" element={<ChatRoom />} />
+
+
+        <Route path="/chat/client" element={<ClientChatAI/> } />
+        <Route path="/chat/lawyer" element={<LawyerChatAI/>} />
+
+        <Route path="/chat" element={<ChatRedirector/>} />
+
 
       </Routes>
 

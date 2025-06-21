@@ -21,6 +21,7 @@ const RegisterLawyer: React.FC = () => {
     password: "",
     confirmPassword: "",
     agree: false,
+    role: "lawyer",
   });
 
   const [image, setImage] = useState<string | null>(null);
@@ -54,7 +55,7 @@ const RegisterLawyer: React.FC = () => {
     setLoading(true);
     try {
       const userCredential = await createUserWithEmailAndPassword(auth, formData.email, formData.password);
-      await setDoc(doc(db, "Lawyers", userCredential.user.uid), {
+      await setDoc(doc(db, "lawyers", userCredential.user.uid), {
         name: formData.name,
         phone: formData.phone,
         location: formData.location,

@@ -23,6 +23,7 @@ const RegisterClient: React.FC = () => {
     password: "",
     confirmPassword: "",
     agree: false,
+    role:"client",
   });
 
   const [image, setImage] = useState<string | null>(null);

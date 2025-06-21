@@ -49,6 +49,7 @@ const UserProfile: React.FC = () => {
   }, []);
 
   const handleEdit = () => setIsEditing(true);
+
   const handleSave = async () => {
     if (!auth.currentUser) return;
     setIsEditing(false);
@@ -78,19 +79,20 @@ const UserProfile: React.FC = () => {
     }
   };
 
-
   const togglePracticeArea = (area: string) => {
     const currentAreas = user.practiceAreas || [];
     const updatedAreas = currentAreas.includes(area)
       ? currentAreas.filter((a: string) => a !== area)
       : [...currentAreas, area];
-
     setUser({ ...user, practiceAreas: updatedAreas });
   };
 
-
   if (loading) return <p className="text-lg text-gray-600 animate-pulse text-center">{t("loading")}</p>;
   if (!user) return <p className="text-lg text-red-500 text-center">{t("noUserData")}</p>;
+
+  console.log("user:", user);
+  console.log("user.practiceAreas:", user.practiceAreas);
+
 
   return (
     <div className="pt-24 flex justify-center items-center min-h-screen bg-gray-100 p-6">
@@ -112,13 +114,40 @@ const UserProfile: React.FC = () => {
             </>
           )}
         </div>
+        
+
         <h2 className="text-3xl font-bold text-yellow-500 mt-4">
-          {isEditing ? <input name="name" value={user.name} onChange={handleInputChange} className="border p-1 rounded-lg" /> : user.name}
+          {isEditing ? (
+            <input name="name" value={user.name} onChange={handleInputChange} className="border p-1 rounded-lg" />
+          ) : (
+            user.name
+          )}
         </h2>
+
         <div className="text-gray-700 space-y-4 mt-4 text-left">
-          {["phone", "email", "about", "experience", "location"].map((field) => (
-            <p key={field}><strong className="text-yellow-500">{t(field)}:</strong> {isEditing ? <input name={field} value={user[field]} onChange={handleInputChange} className="border p-1 rounded-lg w-full" /> : user[field]}</p>
+          {["phone", "email"].map((field) => (
+            <p key={field}>
+              <strong className="text-yellow-500">{t(field)}:</strong>{" "}
+              {isEditing ? (
+                <input name={field} value={user[field]} onChange={handleInputChange} className="border p-1 rounded-lg w-full" />
+              ) : (
+                user[field]
+              )}
+            </p>
           ))}
+
+          {userType === "Lawyer" &&
+            ["about", "experience", "location"].map((field) => (
+              <p key={field}>
+                <strong className="text-yellow-500">{t(field)}:</strong>{" "}
+                {isEditing ? (
+                  <input name={field} value={user[field]} onChange={handleInputChange} className="border p-1 rounded-lg w-full" />
+                ) : (
+                  user[field]
+                )}
+              </p>
+            ))}
+
           {userType === "Lawyer" && (
             <p>
               <strong className="text-yellow-500">{t("practiceAreas.title")}:</strong>
@@ -131,27 +160,33 @@ const UserProfile: React.FC = () => {
                       onChange={() => togglePracticeArea(area)}
                       className="mr-2"
                     />
-                    {t(`practiceAreas.${area}`)}
+                    {t(`practiceAreas.${area}`, area)}
                   </label>
-
                 ))
               ) : (
-                user.practiceAreas.map((area: string) => t(`practiceAreas.${practiceAreaKeys[area.toLowerCase()] || area}`, area)).join(", ")
-
+                <span>
+                  {user.practiceAreas
+                    .map((area: string) => t(`practiceAreas.${practiceAreaKeys[area.toLowerCase()] || area}`, area))
+                    .join(", ")}
+                </span>
               )}
+
               <button
                 onClick={() => navigate("/chats")}
                 className="mt-4 px-6 py-2 bg-blue-500 text-white rounded-lg flex items-center mx-auto hover:bg-blue-600 transition"
               >
-                💬 {t("viewChats") || "View Chats"}
+                💬 {t("viewChats", "View Chats")}
               </button>
-
             </p>
-            
           )}
         </div>
-        <button className="mt-6 px-6 py-2 bg-yellow-500 text-white rounded-lg flex items-center mx-auto hover:bg-yellow-600 transition" onClick={isEditing ? handleSave : handleEdit}>
-          {isEditing ? <FaSave className="mr-2" /> : <FaEdit className="mr-2" />} {isEditing ? t("save") : t("edit")}
+
+        <button
+          className="mt-6 px-6 py-2 bg-yellow-500 text-white rounded-lg flex items-center mx-auto hover:bg-yellow-600 transition"
+          onClick={isEditing ? handleSave : handleEdit}
+        >
+          {isEditing ? <FaSave className="mr-2" /> : <FaEdit className="mr-2" />}
+          {isEditing ? t("save", "Save") : t("edit", "Edit")}
         </button>
       </div>
     </div>
